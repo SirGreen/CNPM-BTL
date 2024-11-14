@@ -36,7 +36,7 @@ namespace InventoryManagementDemo.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Inventory");
+                    return RedirectToPage("/Index");
                 }
 
                 foreach (var error in result.Errors)
@@ -83,7 +83,7 @@ namespace InventoryManagementDemo.Controllers
                 var result = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Inventory"); // Redirect to the Inventory Index after successful login
+                    return RedirectToPage("/Index"); // Redirect to the Inventory Index after successful login
                 }
                 ModelState.AddModelError(string.Empty, "Invalid login attempt."); // Add error for invalid login
             }

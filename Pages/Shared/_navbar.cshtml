@@ -1,5 +1,132 @@
-<nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow mb-3">
-    <div class="container">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Example</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar container */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Logo circle */
+        .navbar-logo {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* Navbar brand name */
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Navbar links */
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            font-size: 16px;
+        }
+
+        .navbar-links a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .navbar-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Style the form to display inline so it fits in navigation */
+        .logout-form {
+            display: inline;
+        }
+
+        /* Style the logout button to look like a link */
+        .logout-button {
+            background: none;
+            border: none;
+            color: #000000;
+            /* Link color */
+            cursor: pointer;
+            text-decoration: none;
+            padding: 0;
+            font-size: 1em;
+            /* Set to match the font size of other links */
+            vertical-align: middle;
+            /* Aligns the button vertically with the text */
+            line-height: 1;
+            /* Ensures consistent line spacing */
+        }
+
+        .logout-button:hover {
+            color: #0056b3;
+            /* Darken color on hover (Bootstrap primary dark shade) */
+            text-decoration: underline;
+            /* Remove underline on hover */
+        }
+
+        /* Container to align items inline */
+        .nav-right-container {
+            display: inline-flex;
+            /* Keeps the Account and Logout inline */
+            align-items: center;
+            /* Vertically centers items */
+            gap: 10px;
+            /* Adds spacing between Account and Logout */
+        }
+    </style>
+</head>
+
+<nav class="navbar">
+    <!-- Left side: Logo and brand name -->
+    <div class="navbar-brand-container" style="display: flex; align-items: center;">
+        <div class="navbar-logo"></div>
+        <div class="navbar-brand">Dịch vụ in ấn Bách Khoa</div>
+    </div>
+
+    <!-- Right side: Navigation links -->
+    <div class="navbar-links">
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <div class="nav-right-container">
+                @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
+                @Html.ActionLink("Xem lịch sử", "PrintHistory", "Student", null, new { @class = "nav-link" })
+                @Html.ActionLink("Mua thêm trang", "BuyPage", "Student", null, new { @class = "nav-link" })
+                @Html.ActionLink("Tài khoản", "Account", "Student", null, new { @class = "nav-link" })
+
+                <form action="@Url.Action("Logout", "Account")" method="post" class="logout-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="logout-button">Đăng xuất</button>
+                </form>
+            </div>
+
+        }
+        else
+        {
+            <div class="nav-right-container">
+                @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
+                @Html.ActionLink("Đăng nhập", "Login", "Account", null, new { @class = "nav-link" })
+                @Html.ActionLink("Đăng ký tài khoản", "Signup", "Account", null, new { @class = "nav-link" })
+
+            </div>
+        }
+    </div>
+
+    @* <div class="container">
         <a class="navbar-brand" asp-area="" asp-page="/Index">Website demo</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,5 +166,5 @@
                 }
             </ul>
         </div>
-    </div>
+    </div> *@
 </nav>
