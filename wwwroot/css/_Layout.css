@@ -1,0 +1,17 @@
+/* site.css */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.footer {
+    padding: 20px 0;
+    background-color: #f8f9fa; /* Light background for footer */
+}
+
+.navbar {
+    transition: background-color 0.3s;
+}
+
+.navbar:hover {
+    background-color: #e9ecef; /* Change on hover */
+}

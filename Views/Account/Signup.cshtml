@@ -1,0 +1,49 @@
+@model InventoryManagementDemo.Models.SignupViewModel
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="form-container">
+    <h2 class="text-center">Sign Up</h2>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <ul class="validation-summary-errors">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    }
+    <!-- Begin Form -->
+    @using (Html.BeginForm("Signup", "Account", FormMethod.Post, new { @class = "signup-form" }))
+    {
+        <!-- Email -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "error-message" })
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "error-message" })
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.ConfirmPassword)
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm your password" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "error-message" })
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">Sign Up</button>
+    }
+</div>
+
+<!-- Client-side validation scripts -->
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
