@@ -2,4 +2,169 @@
     ViewData["Title"] = "Lịch sử in ấn";
 }
 
-Trang xem lịch sử
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+
+<div class="filter-box">
+	<div class="grid-item-1">
+			<p class="filter-title">Mã lọc</p>
+
+			<div class="filter-item-1">
+				<label for="from-date"> 
+					<span style="margin-right: 10px;">Thời gian:</span>
+				</label>
+				<input type="date" id="from-date" value="2024-10-20">
+					<span style="margin-left: 10px; margin-right: 10px;">tới</span>
+				<input type="date" id="to-date">
+			</div>
+
+			<div style="display: flex; margin-top: 5%;">
+				<label class="filter-tag">Tag lọc :</label>
+				<div class="filter-tag-input-block">
+					<input placeholder="Nhập điều kiện lọc" class="filter-tag-input">
+					<button class="ri-close-circle-line delete-button"></button>
+				</div>
+			</div>
+
+			<div class="filter-buttons">
+				<button class="btn btn-secondary">Xóa</button>
+				<button class="btn btn-primary">Lọc</button>
+			</div>
+	</div>
+    
+	<div class="grid-item-2">
+			<div class="input-tag-block">
+				<p style="margin-left: 10px;">Tag</p>
+				<div>
+					<input placeholder="file" class="filter-file-input">
+					<button class="ri-close-circle-line delete-button"></button>
+				</div>
+			</div>
+	</div>
+</div>
+
+<div class="print-history">
+	<div class="record">
+		<p><strong>Tên file:</strong> ABC.pdf</p>
+		<p><strong>ID máy in:</strong> 1111</p>
+		<p><strong>Thời gian:</strong> 27/10/2024</p>
+		<p><strong>Chi phí:</strong> 4 trang A4</p>
+	</div>
+	<div class="record">
+		<p><strong>Tên file:</strong> AZ.pdf</p>
+		<p><strong>ID máy in:</strong> 1112</p>
+		<p><strong>Thời gian:</strong> 27/10/2024</p>
+		<p><strong>Chi phí:</strong> 7 trang A4</p>
+	</div>
+	<div class="record">
+		<p><strong>Tên file:</strong> HCMUT.pdf</p>
+		<p><strong>ID máy in:</strong> 1111</p>
+		<p><strong>Thời gian:</strong> 27/10/2024</p>
+		<p><strong>Chi phí:</strong> 2 trang A4</p>
+	</div>
+	<div class="record">
+		<p><strong>Tên file:</strong> A.docx</p>
+		<p><strong>ID máy in:</strong> 1111</p>
+		<p><strong>Thời gian:</strong> 27/10/2024</p>
+		<p><strong>Chi phí:</strong> 2 trang A4</p>
+	</div>
+</div>
+
+<style>
+    .filter-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .grid-item-1, .grid-item-2 {
+        padding-top : 10%;
+    }
+		.grid-item-2 {
+			margin-left: 5%;
+		}
+    .filter-title, .filter-tag {
+        font-family: 'Roboto', sans-serif;
+        font-weight: bold;
+        font-size: 22px;
+    }
+		.filter-tag {
+			margin-right: 5px;
+		}
+		.filter-tag-input {
+			width: 150px;
+			border: none;
+			background-color: #ddd;
+		}
+		.delete-button {
+			border: none;
+			background-color: #ddd;
+		}
+		.filter-tag-input-block {
+			background-color: #ddd;
+			padding: 5px 5px;
+		}
+		.filter-buttons .btn {
+			margin-top: 3%;
+			padding: 15px 100px;
+			font-size: 14px;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		.btn-primary {
+			background-color: #000;
+			color: #fff;
+			border: none;
+			margin-left: 5%;
+			border: solid 2px #333;
+		}
+		.btn-primary:hover {
+			background-color: #ddd;
+			color: #000;
+		}
+		.btn-secondary {
+			background-color: #fff;
+			color: #000;
+			border: solid 2px #333;
+		}
+		.input-tag-block {
+			background-color: #ddd;
+			width: 20%;
+			height: 30%;
+			border-bottom: solid 2px #333;
+		}
+		.input-tag-block p {
+			margin-bottom: 0px;
+		}
+		.filter-file-input {
+			width: 70px;
+			margin-left: 10px;
+			border: none;
+			background-color: #ddd;
+		}
+
+		.print-history {
+			margin-top: 5%;
+			background-color: #fff;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			padding: 20px;
+			max-height: 500px;
+  		overflow-y: auto;
+		}
+
+		.record {
+			padding: 10px 0;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.record:last-child {
+			border-bottom: none;
+		}
+
+		.record p {
+			margin: 5px 0;
+			font-size: 0.9rem;
+		}
+</style>
