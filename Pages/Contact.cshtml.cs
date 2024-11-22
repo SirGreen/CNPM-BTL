@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -16,4 +18,19 @@ public class ContactModel : PageModel
     {
 
     }
+    [Required]
+    [Display(Name = "Họ và tên")]
+    public required string FullName {get; set;}
+
+    [Required(ErrorMessage = "Cần điền email")]
+    [Display(Name = "Email")]
+    public required string Email {get; set;}
+
+    [Required(ErrorMessage = "Cần ghi rõ vấn đề")]
+    [Display(Name = "Chủ đề")]
+    public required string Topic {get; set;}
+
+    [Required(ErrorMessage = "Cần điền nội dung chi tiết")]
+    [Display(Name = "Nội dung")]
+    public required string Context {get; set;}
 }

@@ -8,13 +8,41 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.black-button {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.black-button:hover {
+  background-color: #444;
 }
 
 html {
   position: relative;
   min-height: 100%;
+}
+
+.detailed {
+  color: gray;
+}
+
+.contact-welcome {
+  background-color: rgb(94, 93, 93);
+  color: white;
 }
 
 body {
@@ -114,4 +142,9 @@ body {
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
+}
+
+img {
+  width: 100vw;
+  height: auto;
 }

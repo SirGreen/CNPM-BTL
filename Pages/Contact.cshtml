@@ -1,10 +1,69 @@
 @page
-@model IndexModel
+@model ContactModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Contact info</a>.</p>
+<div class="container-fluid text-left p-0">
+    <div class="text-center p-5 contact-welcome">
+        <h1 class="display fw-bold">Liên hệ chúng tôi</h1>
+    </div>
+    <div class="row align-items-center m-5">
+        <div class="m-5 col p-0">
+            <h1 class="display-6 fw-bold mb-4">Gửi vấn đề</h1>
+            <p>Vui lòng nêu rõ vấn đề để chúng tôi có thể hỗ trợ tốt nhất</p>
+        </div>
+        <div class="m-5 col form-container">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <ul class="validation-summary-errors">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            }
+            <!-- Begin Contact Form -->
+            @* @using (Html.BeginForm("Contact", "Home", FormMethod.Post, new { @class = "contact-form" }))
+            { *@
+            <!-- Name -->
+            <div class="form-group mb-5">
+                @Html.LabelFor(m => m.FullName, new { @class = "fw-bold mb-1" })
+                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Nhập tên" })
+                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "error-message" })
+            </div>
+            <!-- Email -->
+            <div class="form-group mb-5">
+                @Html.LabelFor(m => m.Email, new { @class = "fw-bold mb-1" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Nhập Email" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "error-message" })
+            </div>
+            <!-- Topic -->
+            <div class="form-group mb-5">
+                @Html.LabelFor(m => m.Topic, new { @class = "fw-bold mb-1" })
+                @Html.TextBoxFor(m => m.Topic, new { @class = "form-control", placeholder = "Nhập vấn đề" })
+                @Html.ValidationMessageFor(m => m.Topic, "", new { @class = "error-message" })
+            </div>
+            <!-- Context -->
+            <div class="form-group mb-5">
+                @Html.LabelFor(m => m.Context, new { @class = "fw-bold mb-1" })
+                @Html.TextBoxFor(m => m.Context, new { @class = "form-control", placeholder = "Chi tiết vấn đề..." })
+                <p class="m-1 fs-6 detailed">Tối đa 500 kí tự</p>
+                @Html.ValidationMessageFor(m => m.Context, "", new { @class = "error-message" })
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="black-button mt-4 p-3 col-6">Gửi</button>
+            @* } *@
+        </div>
+    </div>
+    <div class="row align-items-center m-5">
+        <div class="m-5 col">
+            <h1 class="display-6 fw-bold mb-4">Thông tin liên hệ</h1>
+        </div>
+        <div class="m-5 col">
+            <p>Số điện thoại: +0123 456 789</p>
+            <p>Địa chỉ: 123 Đường ABC</p>
+        </div>
+    </div>
 </div>
