@@ -1,5 +1,41 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<StudentAccount> UserManager
 @{
     ViewData["Title"] = "Tài khoản";
 }
+@{
+    // Get the currently logged-in user
+    var user = await UserManager.GetUserAsync(User);
+}
+<div class="account-container ms-5 mt-5 ps-5">
+    <div class="account justify-content-center align-content-center">
+        <h1 class=""><strong>Thông tin tài khoản</strong></h1>
+        <div class="account-form mt-5">
+            <div class="account-info d-flex justify-content-between">
+                <strong class="ms-3">Email</strong>
+                @if (user != null) {
+                    <span class="info me-3">@user.Email </span> 
+                }
+                else {<span class="info me-3">abc@hcmut.edu.vn</span>}                
+            </div>
 
-Account details page
+            <div class="account-info d-flex justify-content-between">
+                <strong class="ms-3">Họ và tên</strong>
+                @if (user != null) {
+                    <span class="info me-3">@user.FullName </span>
+                }
+                else {<span class="info me-3">ABC</span>}
+            </div>
+            
+            <div class="account-info"><strong class="ms-3">Đổi mật khẩu</strong></div>
+
+            <div class="account-info d-flex justify-content-between">
+                <strong class="ms-3">Số dư</strong>
+                @if (user != null) {
+                    <span class="info me-3">@user.PageLeft A4</span>
+                }
+                else {<span class="info me-3">30 trang A4</span>}
+            </div>
+        </div>
+    </div>
+</div>

@@ -9,7 +9,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Identity with more configuration options
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<StudentAccount, IdentityRole>(options =>
     {
         // options.SignIn.RequireConfirmedAccount = true;
         // You can configure other identity options here

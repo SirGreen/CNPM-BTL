@@ -4,7 +4,7 @@ using InventoryManagementDemo.Models;
 
 namespace InventoryManagementDemo.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<StudentAccount>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
