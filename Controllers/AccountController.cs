@@ -6,10 +6,10 @@ namespace InventoryManagementDemo.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<StudentAccount> _userManager;
+        private readonly SignInManager<StudentAccount> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<StudentAccount> userManager, SignInManager<StudentAccount> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -30,7 +30,7 @@ namespace InventoryManagementDemo.Controllers
             Console.WriteLine("Entered Signup function");
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var user = new StudentAccount { UserName = model.Email, Email = model.Email, FullName = model.FullName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 Console.WriteLine($"Signup {model.Email} {model.Password}");
                 if (result.Succeeded)
