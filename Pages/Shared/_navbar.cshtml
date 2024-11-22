@@ -1,7 +1,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar Example</title>
+    <title>Navbar Component</title>
     <style>
         /* General styles */
         body {
@@ -109,8 +109,9 @@
         {
             <div class="nav-right-container">
                 @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
-                @Html.ActionLink("Xem lịch sử", "PrintHistory", "Student", null, new { @class = "nav-link" })
+                @Html.ActionLink("Xem lịch sử in", "PrintHistory", "Student", null, new { @class = "nav-link" })
                 @Html.ActionLink("Mua thêm trang", "BuyPage", "Student", null, new { @class = "nav-link" })
+                @Html.ActionLink("Liên hệ", "Contact", "Student", null, new { @class = "nav-link" })
                 @Html.ActionLink("Tài khoản", "Account", "Student", null, new { @class = "nav-link" })
 
                 <form action="@Url.Action("Logout", "Account")" method="post" class="logout-form">
@@ -130,46 +131,4 @@
             </div>
         }
     </div>
-
-    @* <div class="container">
-        <a class="navbar-brand" asp-area="" asp-page="/Index">Website demo</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                </li>
-                <li class="nav-item">
-                    @Html.ActionLink("View inventory", "Index", "Inventory", null, new { @class = "nav-link" })
-                </li>
-            </ul>
-
-            <ul class="navbar-nav">
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                {
-                    <li class="nav-item">
-                        <form action="@Url.Action("Logout", "Account")" method="post" style="display:inline;">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="nav-link"
-                                style="background:none; border:none; padding:0; color:inherit; cursor:pointer;">
-                                Logout
-                            </button>
-                        </form>
-                    </li>
-                }
-                else
-                {
-                    <li class="nav-item">
-                        @Html.ActionLink("Login", "Login", "Account", null, new { @class = "nav-link" })
-                    </li>
-                    <li class="nav-item">
-                        @Html.ActionLink("Sign Up", "Signup", "Account", null, new { @class = "nav-link" })
-                    </li>
-                }
-            </ul>
-        </div>
-    </div> *@
 </nav>
