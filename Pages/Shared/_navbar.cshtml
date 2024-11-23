@@ -111,7 +111,7 @@
                 @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
                 @Html.ActionLink("Xem lịch sử in", "PrintHistory", "Student", null, new { @class = "nav-link" })
                 @Html.ActionLink("Mua thêm trang", "BuyPage", "Student", null, new { @class = "nav-link" })
-                @Html.ActionLink("Liên hệ", "Contact", "Student", null, new { @class = "nav-link" })
+                <a href="/Contact" class="nav-link">Liên hệ</a>
                 @Html.ActionLink("Tài khoản", "Account", "Student", null, new { @class = "nav-link" })
 
                 <form action="@Url.Action("Logout", "Account")" method="post" class="logout-form">
@@ -125,6 +125,7 @@
         {
             <div class="nav-right-container">
                 @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
+                <a href="/Contact" class="nav-link">Liên hệ</a>
                 @Html.ActionLink("Đăng nhập", "Login", "Account", null, new { @class = "nav-link" })
                 @Html.ActionLink("Đăng ký tài khoản", "Signup", "Account", null, new { @class = "nav-link" })
 
