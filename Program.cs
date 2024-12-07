@@ -40,4 +40,4 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapDefaultControllerRoute(); // For MVC Controller routing
 
-app.Run();
+app.Run("http://localhost:5083");
