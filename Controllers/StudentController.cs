@@ -28,5 +28,10 @@ namespace InventoryManagementDemo.Controllers
         {
             return View();
         }
+
+        public IActionResult PageConfig()
+        {
+            return View();
+        }
     }
 }
