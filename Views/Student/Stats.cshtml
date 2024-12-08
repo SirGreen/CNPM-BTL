@@ -1,4 +1,102 @@
 @{
-    ViewData["Title"] = "Thống kê";
+    ViewData["Title"] = "Stats";
 }
-Chi tiết
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="w-5 mt-3 ">
+    <h2><strong>Báo cáo thống kê</strong></h2>
+</div>
+
+<div class=" d-flex flex-row">
+    
+    <div class="flex-fill">
+        <div class="d-flex flex-row">
+            <div class="left-box m-4 me-5">
+                <div class="text-start">
+                    <h5><strong>Số lần đã in</strong></h5>
+                </div>
+                <div class="number">5</div>
+                <div>
+                    <h5><strong>Lần</strong></h5>
+                </div>
+                <div class="text-muted">= Bằng so với tháng trước</div>
+            </div>
+
+            <div class="left-box m-4">
+                <div class="text-start">
+                    <h5><strong>Loại file đã sử dụng</strong></h5>
+                </div>
+                <div>
+                    <canvas class="w-75 h-auto ms-4" id="FileType"></canvas>
+                </div>
+                
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-row">
+            
+            <div class="left-box m-4 me-5">
+                <div class="text-start">
+                    <h5><strong>Số trang đã mua</strong></h5>
+                </div>
+                <div class="number">4</div>
+                <div><h5><strong>Trang</strong></h5></div>
+            </div>
+
+            <div class="left-box m-4">
+                <div class="text-start">
+                    <h5><strong>Trạng thái in hiện tại</strong></h5>
+                </div>
+                <img src="/image/printer.png" alt="Printer Icon" class="printer-icon mt-1" />
+            </div>
+
+        </div>
+       
+    </div>
+
+    <div class="right-box m-4 ">
+        <div>
+            <canvas id="PageUsage"></canvas>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    const ctx = document.getElementById('FileType');
+
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['.DOC', '.PDF'],
+        datasets: [{
+          label: '# of Files',
+          data: [1, 4],
+          backgroundColor: [
+           'rgb(255, 3, 3)',
+           'rgb(0, 182, 6)'
+          ]
+        }]
+      },
+    });
+</script>
+
+<script>
+    const ctx1 = document.getElementById('PageUsage');
+
+    new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+          label: '# of Pages',
+          data: [20, 12, 9, 50, 30, 78, 80, 25, 0, 52, 24, 45],
+          borderColor: 'rgb(2, 163, 248)', 
+          tension: 0.4, 
+          pointHoverRadius: 7,
+        }]
+      },
+    });
+</script>
