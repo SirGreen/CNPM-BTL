@@ -13,7 +13,7 @@
     <style>
         #pdf-preview {
             width: 70%;
-            height: 70%;
+            height: 1000px;
             using Microsoft.AspNetCore.Authorization.Infrastructure;
             using Microsoft.AspNetCore.Authorization.Infrastructure;
             using Microsoft.AspNetCore.Components;
@@ -21,6 +21,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             color: black;
             padding: 20px;
+            overflow-y: auto;
         }
 
         #file-info {
@@ -34,6 +35,7 @@
         }
 
         #pdf-preview canvas {
+            margin: 10px auto;
             width: 100%;
             height: auto;
         }
@@ -94,6 +96,7 @@
                         <label class="config-button px-5" for="selectSide2">Hai</label>
                         @Html.ValidationMessageFor(m => m.PageSide, "", new { @class = "error-message" })
                     </div>
+                    <p class="text-secondary mt-3">Giá hai mặt = 50% Giá một mặt</p>
                 </div>
             </div>
             @* Right side: Copy number and page select *@
@@ -299,6 +302,9 @@
                     pageSize = parseInt(pageSize.value)
                 }
                 var pageSide = document.querySelector('input[name="PageSide"]:checked')
+                if (pageSide != null) {
+                    pageSide = parseInt(pageSide.value)
+                }
                 var copyNum = parseInt(document.getElementById("CopyNumValue").value);
                 if (e.target.type == "radio" && e.target.name == "CopyNum") {
                     copyNum = parseInt(document.querySelector('input[name="CopyNum"]:checked').value);
@@ -311,13 +317,15 @@
                 // Kiểm tra nếu tất cả các field đều có giá trị
                 if (pageSize && copyNum && pageSelect && pageSide && numOfSelectedPage) {
                     // Nếu tất cả field đã điền, tính giá dự kiến và cho phép bấm nút in
-                    console.log("Page size, number of copies, select index:", pageSize, copyNum, pageSelect);
-                    updatePageCostCount(pageSize * copyNum * numOfSelectedPage);
+                    console.log("Page size, sides, number of copies, select index:", pageSize, pageSide, copyNum, pageSelect);
+                    updatePageCostCount(pageSize * copyNum * numOfSelectedPage / pageSide);
                     updatePdfPageCount(numOfSelectedPage)
                     pageCount = numOfSelectedPage
-                    index = 0
-                    updatePageInfo(pageCount)
-                    renderPage(pageSelect[0])
+
+                    pdfPreview.innerHTML = '';
+                    for (let i = 0; i < pageCount; i++) {
+                        renderPage(pageSelect[i])
+                    }
                 }
             });
 
@@ -328,14 +336,15 @@
             document.getElementById('resetConfig').addEventListener('click', function (e) {
                 console.warn("Config form has been reset!");
                 pageCount = totalPages
-                index = 0
                 updatePageInfo(totalPages)
-                renderPage(1)
                 updatePageCostCount("...")
                 updatePdfPageCount(totalPages)
+
+                pdfPreview.innerHTML = '';
                 pageSelect = []
                 for (let i = 1; i <= totalPages; i++) {
                     pageSelect.push(i);
+                    renderPage(i)
                 }
             })
         </script>
@@ -349,14 +358,8 @@
     <div id="file-info"></div>
     <div id="page-count"></div>
 
-    <div id="pdf-preview" class="container">
-        <canvas id="pdf-canvas"></canvas>
-    </div>
-    <div class="controls text-center">
-        <button id="prev-page" class="black-button m-4">Trang trước</button>
-        <span id="page-info" class="fs-5">Trang 1</span>
-        <button id="next-page" class="black-button m-4">Trang sau</button>
-    </div>
+    <div id="pdf-preview" class="container mb-5"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
         var pageCount, totalPages
@@ -364,12 +367,9 @@
         const fileNameDisplay = document.getElementById('file-name');
         const fileInfo = document.getElementById('file-info');
 
-        const canvas = document.getElementById('pdf-canvas');
+        @* const canvas = document.getElementById('pdf-canvas'); *@
         const pageInfo = document.getElementById('page-info');
         var pdf = null
-
-        let currentPage = 1;    // Trang hiện tại
-        var index = 0;          // Index trang
 
         // Retrieve the file data (both name and content) from localStorage
         const savedFile = JSON.parse(localStorage.getItem('uploadedFile'));
@@ -398,11 +398,10 @@
                     // Lấy số trang từ PDF
                     totalPages = pageCount = pdf.numPages;
                     updatePdfPageCount(totalPages)
-                    for (let i = 1; i <= totalPages; i++) {
-                        pageSelect.push(i);
+                    for (i = 1; i <= totalPages; i++) {
+                        pageSelect.push(i)
+                        renderPage(i)
                     }
-                    renderPage(currentPage); // Render trang nếu hợp lệ
-                    updatePageInfo(totalPages)
                 });
             } else {
                 fileInfo.textContent = "File loaded from localStorage: This is not a PDF file.";
@@ -415,10 +414,12 @@
         }
         function renderPage(pageNumber) {
             pdf.getPage(pageNumber).then(page => {
+                const canvas = document.createElement('canvas');
                 const viewport = page.getViewport({ scale: 1.5 });
                 const context = canvas.getContext('2d');
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
+                canvas.id = `page-${pageNumber}`; // Đặt ID cho từng canvas
                 pdfPreview.appendChild(canvas);
 
                 page.render({
@@ -427,31 +428,6 @@
                 });
             });
         }
-
-        // Cập nhật thông tin trang
-        function updatePageInfo(pageCount) {
-            pageInfo.textContent = `Trang ${index + 1} trên ${pageCount}`;
-        }
-
-        // Nút Trang trước
-        document.getElementById('prev-page').addEventListener('click', () => {
-            if (index > 0) {
-                index--;
-                currentPage = pageSelect[index]
-                updatePageInfo(pageCount)
-                renderPage(currentPage);
-            }
-        });
-
-        // Nút Trang sau
-        document.getElementById('next-page').addEventListener('click', () => {
-            if (index < pageCount - 1) {
-                index++;
-                currentPage = pageSelect[index]
-                updatePageInfo(pageCount)
-                renderPage(currentPage);
-            }
-        });
     </script>
 
 </body>
