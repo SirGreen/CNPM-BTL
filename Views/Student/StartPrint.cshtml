@@ -12,114 +12,278 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload with Drag & Drop</title>
-    <style>
-        #drop-area {
-            width: 100%;
-            height: 200px;
-            border: 2px dashed #4CAF50;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 20px;
-        }
-
-        #file-input {
-            display: none;
-        }
-
-        #choose-file-btn {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        #choose-file-btn:hover {
-            background-color: #45a049;
-        }
-
-        #file-name {
-            margin-top: 10px;
-        }
-    </style>
 </head>
-
 <body>
 
-    <h2>Drag and Drop or Choose a File</h2>
+	<h1 class="mainTitle">
+			In Tài Liệu
+	</h1>
 
-    <!-- Drag & Drop Area -->
-    <div id="drop-area">
-        <p>Drag & Drop file here or</p>
-        <button id="choose-file-btn">Choose File</button>
-        <input type="file" id="file-input" />
+	<div class="documentPrinterBox">
+		<div class="documentBox">
+			<p class="documentBoxTitle">Tải Tài liệu</p>
+			<label for="fileInput" id="documentButton" class="documentButton">Chọn tài liệu để tải</label>
+			<input type="file" id="fileInput" accept=".pdf,.docx" style="display: none;">
+			<p class="documentBoxText">Loại tệp hỗ trợ: PDF, DOCX</p>
+		</div>
+
+		<div class="printBox">
+			<p class="printBoxTitle">Chọn máy in</p>
+			<p class="printBoxText">Hiện tại: Không</p>
+			<button class="printerChoose" id="printerChooseButton">Chọn máy in</button>
+		</div>
+	</div>
+
+	<div class="ContinueButtonBox">
+		<a class="ContinueButton" href="/Student/PageConfig" class="ContinueButton">Tiếp tục</a>
+	</div>
+
+	<!-- Lựa máy in -->
+	<div class="printerModal" id="printerModal">
+    <div class="modalContent">
+			<div class="modalContentHeader">
+				<p class="modalContentHeaderTitle">Chọn Máy In</p>
+				<button id="closeModalButton" class="closeButton">X</button>
+			</div>
+
+			<div class="printerButtonList">
+				<button class="printerButton" data-printer="Printer 1111">
+					<p class="printerButtonName">Máy ABC-1:A4 - Lầu 1</p>
+					<p class="printerButtonID">ID: 1111</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1112">
+					<p class="printerButtonName">Máy ABC-2:C6 - Lầu 3</p>
+					<p class="printerButtonID">ID: 1112</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1113">
+					<p class="printerButtonName">Máy ABC-3:A4 - Lầu 2</p>
+					<p class="printerButtonID">ID: 1113</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1114">
+					<p class="printerButtonName">Máy ABC-4:A4 - Lầu 1</p>
+					<p class="printerButtonID">ID: 1114</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1115">
+					<p class="printerButtonName">Máy ABC-5:C6 - Lầu 3</p>
+					<p class="printerButtonID">ID: 1115</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1116">
+					<p class="printerButtonName">Máy ABC-6:A4 - Lầu 2</p>
+					<p class="printerButtonID">ID: 1116</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1117">
+					<p class="printerButtonName">Máy ABC-6:C6 - Lầu 6</p>
+					<p class="printerButtonID">ID: 1117</p>
+				</button>
+			</div>
+
+			<div>
+
+			</div>
+			
     </div>
-    <button type="button" class="black-button mt-4 p-3 col-6" onclick="window.location.href='/Student/PageConfig';">Bắt đầu in</button>
-    <p id="file-name"></p>
-
-    <script>
-        const dropArea = document.getElementById('drop-area');
-        const fileInput = document.getElementById('file-input');
-        const fileNameDisplay = document.getElementById('file-name');
-
-        // Handle drag events
-        dropArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropArea.style.backgroundColor = '#f1f1f1';
-        });
-
-        dropArea.addEventListener('dragleave', () => {
-            dropArea.style.backgroundColor = '#fff';
-        });
-
-        dropArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropArea.style.backgroundColor = '#fff';
-
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        });
-
-        // Handle file input (when user clicks "Choose File")
-        document.getElementById('choose-file-btn').addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        // File input change event (when user selects a file)
-        fileInput.addEventListener('change', () => {
-            const files = fileInput.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        });
-
-        // Handle file (show name and store in localStorage)
-        function handleFile(file) {
-            const fileName = file.name;
-            fileNameDisplay.textContent = `Selected file: ${fileName}`;
-
-            // Save file name and file content to localStorage
-            const reader = new FileReader();
-            reader.onloadend = function () {
-                // Save both file name and base64 data to localStorage
-                const fileData = {
-                    name: fileName,
-                    data: reader.result
-                };
-                localStorage.setItem('uploadedFile', JSON.stringify(fileData));
-                console.log('File name and data saved to localStorage');
-            };
-
-            reader.readAsDataURL(file);  // This will encode the file to base64
-        }
-    </script>
+	</div>
 
 </body>
 
+<style>
+	.mainTitle {
+			text-align: center;
+			font-family: 'Arial';
+			font-weight: bold;
+			margin-top: 5%;
+	}
+	.documentPrinterBox {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 5%;
+	}
+	.documentBoxTitle {
+			font-family: Arial;
+			font-size: 24px;
+			font-weight: bold;
+	}
+	.documentBoxText {
+			font-family: Arial;
+			font-size: 16px;
+			opacity: 0.5;
+			margin-top: 5%;
+	}
+	.documentButton {
+			border: none;
+			border: 2px rgba(0, 0, 0, 0.3) solid;
+			border-radius: 10px;
+			background-color: white;
+			padding: 10px;
+			margin-top: -10px;
+			display: inline-block;
+			text-align: center;
+			cursor: pointer;
+	}
+
+	.printBox {
+		margin-right: 35%;
+	}
+	.printBoxTitle {
+		font-family: Arial;
+		font-size: 24px;
+		font-weight: bold;
+	}
+	.printBoxText {
+			font-family: Arial;
+			font-size: 16px;
+			opacity: 0.5;
+			margin-top: -10px;
+	}
+	.printerSelector {
+		border: none;
+		border: 2px rgba(0, 0, 0, 0.3) solid;
+		border-radius: 10px;
+		background-color: white;
+		padding: 10px;
+		margin-top: -10px;
+		display: inline-block;
+		text-align: center;
+		cursor: pointer;
+	}
+
+	.ContinueButtonBox {
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		margin-top: 5%;
+		margin-bottom: 5%;
+	}
+	.ContinueButton {
+		border: none;
+		background-color: black;
+		color: white;
+		border-radius: 20px;
+		padding-top: 1%;
+		padding-bottom: 1%;
+		padding-left: 10%;
+		padding-right: 10%;
+		text-decoration: none;
+	}
+
+	.printerModal {
+		display: none;
+		position: fixed;
+		z-index: 1000;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+	.modalContent {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 10px;
+    text-align: center;
+    position: fixed; /* Keeps modal fixed */
+		top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden; /* Prevent scrolling of the entire modal */
+	}
+	.modalContentHeader {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 18px;
+		font-weight: bold;
+	}
+	.modalContentHeaderTitle {
+		margin-bottom: 0;
+		text-align: center;
+		margin-left: 44%;
+	}
+	.closeButton {
+		border: none;
+		font-size: 18px;
+		font-weight: bold;
+		cursor: pointer;
+		text-align: right;
+		margin-bottom: 10px;
+	}
+	.printerButtonList {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		border: 2px solid black;
+		border-radius: 10px;
+		height: 400px; /* Set a fixed height */
+		overflow-y: auto; /* Enable scrolling for the list */
+		padding: 10px;
+		margin-top: 10px;
+	}
+	.printerButton {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 1%;
+		margin-bottom: 1%;
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+	.printerButtonName {
+		text-align: left;
+	}
+	.printerButtonID {
+		text-align: right;
+	}
+</style>
+
+<script>
+	const fileInput = document.getElementById('fileInput');
+	const documentButton = document.getElementById('documentButton');
+
+	fileInput.addEventListener('change', (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			const fileName = file.name;
+			const validExtensions = ['.pdf', '.docx'];
+
+			if (validExtensions.some(ext => fileName.toLowerCase().endsWith(ext))) {
+				documentButton.textContent = fileName; 
+				documentButton.style.color = 'green';
+			} else {
+				alert('Định dạng tệp không hợp lệ. Vui lòng chọn tệp PDF hoặc DOCX.');
+				fileInput.value = '';
+				documentButton.textContent = 'Chọn tài liệu để tải'; 
+				documentButton.style.color = 'black';
+			}
+		} else {
+			documentButton.textContent = 'Chọn tài liệu để tải'; 
+		}
+	});
+
+
+	const printerModal = document.getElementById('printerModal');
+	const closeModalButton = document.getElementById('closeModalButton');
+	const openModalButton = document.getElementById('printerChooseButton');
+	const printBoxText = document.querySelector('.printBoxText');
+	const printerButtons = document.querySelectorAll('.printerButton');
+
+	openModalButton.addEventListener('click', () => {
+		printerModal.style.display = 'block';
+	});
+
+	closeModalButton.addEventListener('click', () => {
+		printerModal.style.display = 'none';
+	});
+
+	printerButtons.forEach(button => {
+		button.addEventListener('click', () => {
+				const printerName = button.querySelector('.printerButtonName').textContent;
+				printBoxText.textContent = `Hiện tại: ${printerName}`;
+				printerModal.style.display = 'none'; 
+		});
+	});
+
+</script>
 </html>
