@@ -30,20 +30,59 @@
 		<div class="printBox">
 			<p class="printBoxTitle">Chọn máy in</p>
 			<p class="printBoxText">Hiện tại: Không</p>
-			<select class="printerSelector">
-				<option value="">Chọn máy in</option>
-				<option value="">Printer 1</option>
-				<option value="">Printer 2</option>
-				<option value="">Printer 3</option>
-				<option value="">Printer 4</option>
-			</select>
+			<button class="printerChoose" id="printerChooseButton">Chọn máy in</button>
 		</div>
 	</div>
 
 	<div class="ContinueButtonBox">
 		<a class="ContinueButton" href="/Student/PageConfig" class="ContinueButton">Tiếp tục</a>
 	</div>
-	
+
+	<!-- Lựa máy in -->
+	<div class="printerModal" id="printerModal">
+    <div class="modalContent">
+			<div class="modalContentHeader">
+				<p class="modalContentHeaderTitle">Chọn Máy In</p>
+				<button id="closeModalButton" class="closeButton">X</button>
+			</div>
+
+			<div class="printerButtonList">
+				<button class="printerButton" data-printer="Printer 1111">
+					<p class="printerButtonName">Máy ABC-1:A4 - Lầu 1</p>
+					<p class="printerButtonID">ID: 1111</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1112">
+					<p class="printerButtonName">Máy ABC-2:C6 - Lầu 3</p>
+					<p class="printerButtonID">ID: 1112</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1113">
+					<p class="printerButtonName">Máy ABC-3:A4 - Lầu 2</p>
+					<p class="printerButtonID">ID: 1113</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1114">
+					<p class="printerButtonName">Máy ABC-4:A4 - Lầu 1</p>
+					<p class="printerButtonID">ID: 1114</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1115">
+					<p class="printerButtonName">Máy ABC-5:C6 - Lầu 3</p>
+					<p class="printerButtonID">ID: 1115</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1116">
+					<p class="printerButtonName">Máy ABC-6:A4 - Lầu 2</p>
+					<p class="printerButtonID">ID: 1116</p>
+				</button>
+				<button class="printerButton" data-printer="Printer 1117">
+					<p class="printerButtonName">Máy ABC-6:C6 - Lầu 6</p>
+					<p class="printerButtonID">ID: 1117</p>
+				</button>
+			</div>
+
+			<div>
+
+			</div>
+			
+    </div>
+	</div>
 
 </body>
 
@@ -127,6 +166,76 @@
 		text-decoration: none;
 	}
 
+	.printerModal {
+		display: none;
+		position: fixed;
+		z-index: 1000;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+	.modalContent {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 10px;
+    text-align: center;
+    position: fixed; /* Keeps modal fixed */
+		top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden; /* Prevent scrolling of the entire modal */
+	}
+	.modalContentHeader {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 18px;
+		font-weight: bold;
+	}
+	.modalContentHeaderTitle {
+		margin-bottom: 0;
+		text-align: center;
+		margin-left: 44%;
+	}
+	.closeButton {
+		border: none;
+		font-size: 18px;
+		font-weight: bold;
+		cursor: pointer;
+		text-align: right;
+		margin-bottom: 10px;
+	}
+	.printerButtonList {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		border: 2px solid black;
+		border-radius: 10px;
+		height: 400px; /* Set a fixed height */
+		overflow-y: auto; /* Enable scrolling for the list */
+		padding: 10px;
+		margin-top: 10px;
+	}
+	.printerButton {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 1%;
+		margin-bottom: 1%;
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+	.printerButtonName {
+		text-align: left;
+	}
+	.printerButtonID {
+		text-align: right;
+	}
 </style>
 
 <script>
@@ -136,23 +245,45 @@
 	fileInput.addEventListener('change', (event) => {
 		const file = event.target.files[0];
 		if (file) {
-				const fileName = file.name;
-				const validExtensions = ['.pdf', '.docx'];
+			const fileName = file.name;
+			const validExtensions = ['.pdf', '.docx'];
 
-				if (validExtensions.some(ext => fileName.toLowerCase().endsWith(ext))) {
-						documentButton.textContent = fileName; 
-						documentButton.style.color = 'green';
-				} else {
-						alert('Định dạng tệp không hợp lệ. Vui lòng chọn tệp PDF hoặc DOCX.');
-						fileInput.value = '';
-						documentButton.textContent = 'Chọn tài liệu để tải'; 
-						documentButton.style.color = 'black';
-				}
-		} else {
+			if (validExtensions.some(ext => fileName.toLowerCase().endsWith(ext))) {
+				documentButton.textContent = fileName; 
+				documentButton.style.color = 'green';
+			} else {
+				alert('Định dạng tệp không hợp lệ. Vui lòng chọn tệp PDF hoặc DOCX.');
+				fileInput.value = '';
 				documentButton.textContent = 'Chọn tài liệu để tải'; 
+				documentButton.style.color = 'black';
+			}
+		} else {
+			documentButton.textContent = 'Chọn tài liệu để tải'; 
 		}
 	});
 
+
+	const printerModal = document.getElementById('printerModal');
+	const closeModalButton = document.getElementById('closeModalButton');
+	const openModalButton = document.getElementById('printerChooseButton');
+	const printBoxText = document.querySelector('.printBoxText');
+	const printerButtons = document.querySelectorAll('.printerButton');
+
+	openModalButton.addEventListener('click', () => {
+		printerModal.style.display = 'block';
+	});
+
+	closeModalButton.addEventListener('click', () => {
+		printerModal.style.display = 'none';
+	});
+
+	printerButtons.forEach(button => {
+		button.addEventListener('click', () => {
+				const printerName = button.querySelector('.printerButtonName').textContent;
+				printBoxText.textContent = `Hiện tại: ${printerName}`;
+				printerModal.style.display = 'none'; 
+		});
+	});
 
 </script>
 </html>
