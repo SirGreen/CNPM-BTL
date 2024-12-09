@@ -64,6 +64,33 @@ namespace InventoryManagementDemo.Controllers
             return RedirectToAction("Account"); // Redirect to the account page
         }
 
+        [HttpPost]
+        
+        public async Task<IActionResult> MinusPage(string userId, uint pageLeft)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                _logger.LogError("notfound");
+                return NotFound();
+            }
+            if (pageLeft <= user.PageLeft)
+                user.PageLeft -= pageLeft;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                // Handle user update errors
+                foreach (var error in updateResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View("PageConfig", user); // Assuming "Account" is your view name
+            }
+
+            return RedirectToAction("PrintHistory"); // Redirect to the account page
+        }
+
         public IActionResult Account()
         {
             return View();
