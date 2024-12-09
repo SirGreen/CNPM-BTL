@@ -1,32 +1,43 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<StudentAccount> UserManager
 @{
-    ViewData["Title"] = "Mua thêm trang";
+  ViewData["Title"] = "Mua thêm trang";
+  var user = await UserManager.GetUserAsync(User);
+  var pageLeft = user?.PageLeft;
+  var userId = user?.Id;
 }
 <div class="buy-page-container d-flex flex-row">
   <div class="flex-fill pe-5">
-    <h1 class="d-flex justify-content-center h-100 align-items-center">
-      <strong>Mua thêm trang</strong></h1>
+    <h1 class="d-flex justify-content-center h-50 align-items-center">
+      <strong>Mua thêm trang</strong>
+    </h1>
+    <h3 class="d-flex justify-content-center align-items-center">
+      Tài khoản còn lại @pageLeft trang A4
+    </h3>
   </div>
-
+  <form id="accountForm" method="post" asp-controller="Student" asp-action="UpdateAccount">
+    <input type="hidden" asp-for="@userId" name="userId" />
     <div class="m-auto w-50 pe-5">
       <div class="mb-5 d-flex flex-column">
         <label class="page-num-text lh-lg">Số trang A4 mua thêm</label>
-          <input class="page-num-control " placeholder="Nhập vào số trang" />
-      <div class="price mt-1">Đơn giá: 500 VNĐ/trang</div>
-    </div>
+        <input type="number" id="pageLeft" name="pageLeft" class="page-num-control " placeholder="Nhập vào số trang" />
+        <div class="price mt-1">Đơn giá: 500 VNĐ/trang</div>
+      </div>
 
-    <div class="mb-5 d-flex flex-column">
-      <label class="payment-method-text lh-lg">Phương thức thanh toán</label>
+      <div class="mb-5 d-flex flex-column">
+        <label class="payment-method-text lh-lg">Phương thức thanh toán</label>
         <div>
           <button class="payment-method-button">Thẻ ngân hàng</button>
           <button class="payment-method-button">PayPal</button>
           <button class="payment-method-button">BkPay</button>
-        </div>            
-    </div>
+        </div>
+      </div>
 
-    <div class="btn-group">
-      <button type="button" class="cancel-button me-3 bg-white">Hủy</button>
-      <button type="button" class="buy-button text-white bg-dark border-0">
-        Mua Thêm</button>
+      <div class="btn-group">
+        <button type="button" class="cancel-button me-3 bg-white">Hủy</button>
+        <button type="submit" class="buy-button text-white bg-dark border-0">
+          Mua Thêm</button>
+      </div>
     </div>
-  </div>
+  </form>
 </div>

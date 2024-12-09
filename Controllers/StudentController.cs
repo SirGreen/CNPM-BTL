@@ -8,13 +8,12 @@ namespace InventoryManagementDemo.Controllers
     public class StudentController : Controller
     {
         private readonly UserManager<StudentAccount> _userManager;
+        private readonly ILogger<StudentController> _logger;
 
-        // other dependencies
-
-        public StudentController(UserManager<StudentAccount> userManager /* other dependencies */)
+        public StudentController(UserManager<StudentAccount> userManager, ILogger<StudentController> logger)
         {
             _userManager = userManager;
-            // other initializations
+            _logger = logger;
         }
 
         [HttpPost]
@@ -23,6 +22,7 @@ namespace InventoryManagementDemo.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
+                _logger.LogError("notfound");
                 return NotFound();
             }
 
@@ -32,7 +32,7 @@ namespace InventoryManagementDemo.Controllers
                 user.FullName = fullName;
             }
 
-            user.PageLeft = pageLeft;
+            user.PageLeft += pageLeft;
 
             // Update Password (if provided)
             if (!string.IsNullOrEmpty(password) && password == confirmPassword)
@@ -58,10 +58,10 @@ namespace InventoryManagementDemo.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                return View("Hidden", user); // Assuming "Account" is your view name
+                return View("Account", user); // Assuming "Account" is your view name
             }
 
-            return RedirectToAction("Hidden"); // Redirect to the account page
+            return RedirectToAction("Account"); // Redirect to the account page
         }
 
         public IActionResult Account()
