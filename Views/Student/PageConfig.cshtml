@@ -96,7 +96,7 @@
                         <label class="config-button px-5" for="selectSide2">Hai</label>
                         @Html.ValidationMessageFor(m => m.PageSide, "", new { @class = "error-message" })
                     </div>
-                    <p class="text-secondary mt-3">Giá hai mặt = 50% Giá một mặt</p>
+                    <p class="text-secondary mt-3">Giá một mặt = 2 lần giá hai mặt</p>
                 </div>
             </div>
             @* Right side: Copy number and page select *@
@@ -318,7 +318,8 @@
                 if (pageSize && copyNum && pageSelect && pageSide && numOfSelectedPage) {
                     // Nếu tất cả field đã điền, tính giá dự kiến và cho phép bấm nút in
                     console.log("Page size, sides, number of copies, select index:", pageSize, pageSide, copyNum, pageSelect);
-                    updatePageCostCount(pageSize * copyNum * numOfSelectedPage / pageSide);
+                    var pageSideWeight = (pageSide==2)?1:2;
+                    updatePageCostCount(pageSize * copyNum * numOfSelectedPage * pageSideWeight);
                     updatePdfPageCount(numOfSelectedPage)
                     pageCount = numOfSelectedPage
 
