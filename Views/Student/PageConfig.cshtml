@@ -1,9 +1,14 @@
 @model PageConfigModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<StudentAccount> UserManager
 @{
     ViewData["Title"] = "Cài đặt in ấn";
 }
 @{
     Layout = "_Layout";
+    var user = await UserManager.GetUserAsync(User);
+    var pageLeft = user?.PageLeft;
+    var userId = user?.Id;
 }
 
 <head>
@@ -50,8 +55,10 @@
         </div>
         <!-- Begin Config Form -->
         @* @using (Html.BeginForm("PageConfig", "Student", FormMethod.Post, new { @class = "config-form" }))
-            { *@
-        <form id="printConfig" class="row align-items-center m-5 mt-0" action="PrintHistory">
+            { 
+            
+        <form id="printConfig" class="row align-items-center m-5 mt-0" action="PrintHistory">*@
+        <form id="printConfig"class="row align-items-center m-5 mt-0"  method="post" asp-controller="Student" asp-action="MinusPage">
             @* Left side: Paper size and number of printed sides *@
             <div class="m-4 mt-0 col">
                 <!-- Page Size -->
@@ -221,6 +228,10 @@
                     <p class="text-secondary" id="pageCount">Tổng giá dự kiến: ... trang</p>
                 </div>
             </div>
+        </form>
+        <form id="printConfig"class="row align-items-center m-5 mt-0"  method="post" asp-controller="Student" asp-action="MinusPage">
+            <input type="hidden" asp-for="@userId" name="userId" />
+            <input type="hidden" id="pageLeft" name="pageLeft" class="page-num-control" value=""/>
             <!-- Submit Button -->
             <div class="text-center m-5">
                 <button type="reset" class="black-button-outline mt-4 p-3 col-3" id="resetConfig">Đặt lại</button>
@@ -318,7 +329,7 @@
                 if (pageSize && copyNum && pageSelect && pageSide && numOfSelectedPage) {
                     // Nếu tất cả field đã điền, tính giá dự kiến và cho phép bấm nút in
                     console.log("Page size, sides, number of copies, select index:", pageSize, pageSide, copyNum, pageSelect);
-                    var pageSideWeight = (pageSide==2)?1:2;
+                    var pageSideWeight = (pageSide == 2) ? 1 : 2;
                     updatePageCostCount(pageSize * copyNum * numOfSelectedPage * pageSideWeight);
                     updatePdfPageCount(numOfSelectedPage)
                     pageCount = numOfSelectedPage
@@ -332,6 +343,7 @@
 
             function updatePageCostCount(pages) {
                 document.getElementById('pageCount').innerHTML = `Tổng giá dự kiến: ${pages} trang`;
+                document.getElementById('pageLeft').value =pages;
             }
 
             document.getElementById('resetConfig').addEventListener('click', function (e) {

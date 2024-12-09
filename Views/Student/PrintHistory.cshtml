@@ -1,8 +1,6 @@
 @model PrintHistoryModel
 @{
 	ViewData["Title"] = "Lịch sử in";
-}
-@{
 	Layout = "_Layout";
 }
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,13 +35,62 @@
 					var oneMonthAgo = new Date(today);
 					oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-					// Format the dates as yyyy-MM-dd
-					var formattedToday = today.toISOString().slice(0, 10);
-					var formattedOneMonthAgo = oneMonthAgo.toISOString().slice(0, 10);
+					// Function to format date as yyyy-MM-dd
+					function formatDateForInput(date) {
+						var day = date.getDate().toString().padStart(2, '0');
+						var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
+						var year = date.getFullYear();
+						return year + '-' + month + '-' + day;
+					}
 
-					// Set the values of the input elements
-					fromDateInput.value = formattedOneMonthAgo;
-					toDateInput.value = formattedToday;
+					// Function to format date as dd/MM/yyyy
+					function formatDateForDisplay(date) {
+						var day = date.getDate().toString().padStart(2, '0');
+						var month = (date.getMonth() + 1).toString().padStart(2, '0');
+						var year = date.getFullYear();
+						return day + '/' + month + '/' + year;
+					}
+
+					// Set the initial values in yyyy-MM-dd format (required for input type="date")
+					fromDateInput.value = formatDateForInput(oneMonthAgo);
+					toDateInput.value = formatDateForInput(today);
+
+					// Display the dates in dd/MM/yyyy format using a workaround
+					function displayFormattedDate(inputElement) {
+						var initialValue = inputElement.value; // yyyy-MM-dd
+						if (initialValue) {
+							var dateParts = initialValue.split('-');
+							if (dateParts.length === 3) {
+								var year = parseInt(dateParts[0], 10);
+								var month = parseInt(dateParts[1], 10) - 1;
+								var day = parseInt(dateParts[2], 10);
+								var dateObj = new Date(year, month, day);
+								// Create a hidden input to store the yyyy-MM-dd value
+								var hiddenInput = document.createElement('input');
+								hiddenInput.type = 'hidden';
+								hiddenInput.name = inputElement.name; // Same name as the date input
+								hiddenInput.id = inputElement.id + '-hidden';
+								hiddenInput.value = initialValue;
+								inputElement.parentNode.insertBefore(hiddenInput, inputElement.nextSibling);
+								// Change the input type to text to display dd/MM/yyyy
+								inputElement.type = 'text';
+								inputElement.value = formatDateForDisplay(dateObj);
+								// Update the hidden input when the displayed value changes
+								inputElement.addEventListener('change', function () {
+									var displayParts = inputElement.value.split('/');
+									if (displayParts.length === 3) {
+										var displayDay = parseInt(displayParts[0], 10);
+										var displayMonth = parseInt(displayParts[1], 10) - 1;
+										var displayYear = parseInt(displayParts[2], 10);
+										var displayDateObj = new Date(displayYear, displayMonth, displayDay);
+										hiddenInput.value = formatDateForInput(displayDateObj);
+									}
+								});
+							}
+						}
+					}
+					displayFormattedDate(fromDateInput);
+					displayFormattedDate(toDateInput);
 				});
 
 				document.addEventListener("DOMContentLoaded", () => {
@@ -108,8 +155,8 @@
 
 		<div class="filter-buttons">
 			<button class="btn btn-secondary">Xóa</button>
-			<button class="btn btn-primary">Lọc</button>
-			<button class="btn btn-primary">Báo cáo thống kê</button>
+			<button class="btn btn-primary" id="filterButton">Lọc</button>
+			<button class="btn btn-primary" onclick="window.location.href='/Student/Stats'">Báo cáo thống kê</button>
 		</div>
 	</div>
 
@@ -133,30 +180,7 @@
 </div>
 
 <div class="print-history">
-	<div class="record">
-		<p><strong>Tên file:</strong> ABC.pdf</p>
-		<p><strong>ID máy in:</strong> 1111</p>
-		<p><strong>Thời gian:</strong> 27/10/2024</p>
-		<p><strong>Chi phí:</strong> 4 trang A4</p>
-	</div>
-	<div class="record">
-		<p><strong>Tên file:</strong> AZ.pdf</p>
-		<p><strong>ID máy in:</strong> 1112</p>
-		<p><strong>Thời gian:</strong> 27/10/2024</p>
-		<p><strong>Chi phí:</strong> 7 trang A4</p>
-	</div>
-	<div class="record">
-		<p><strong>Tên file:</strong> HCMUT.pdf</p>
-		<p><strong>ID máy in:</strong> 1111</p>
-		<p><strong>Thời gian:</strong> 27/10/2024</p>
-		<p><strong>Chi phí:</strong> 2 trang A4</p>
-	</div>
-	<div class="record">
-		<p><strong>Tên file:</strong> A.docx</p>
-		<p><strong>ID máy in:</strong> 1111</p>
-		<p><strong>Thời gian:</strong> 27/10/2024</p>
-		<p><strong>Chi phí:</strong> 2 trang A4</p>
-	</div>
+	@* Records will be loaded here *@
 </div>
 
 <style>
@@ -263,6 +287,9 @@
 	}
 
 	.record {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 		padding: 10px 0;
 		border-bottom: 1px solid #ddd;
 	}
@@ -271,12 +298,128 @@
 		border-bottom: none;
 	}
 
-	.record p {
+	.record-details p {
 		margin: 5px 0;
 		font-size: 0.9rem;
 	}
-	.ri-close-circle-line {
-    display: none; /* Hidden by default */
-    cursor: pointer;
+
+	.status-icon {
+		font-size: 1.5rem;
+	}
+
+	/* For Remix Icon */
+	.done-icon {
+		color: green;
+	}
+
+	.ri-check-line.done-icon {
+		/*check mark icon*/
+		color: green;
+	}
+
+	.pending-icon {
+		color: orange;
+	}
+
+	.ri-time-line.pending-icon {
+		/*clock icon*/
+		color: orange;
+	}
+
+	.error-icon {
+		color: red;
+	}
+
+	.ri-close-circle-line.error-icon {
+		/*error icon*/
+		color: red;
+	}
+
+	.ri-loader-4-line.pending-icon {
+		color: orange
 	}
 </style>
+
+<script>
+	// Sample data - now includes a 'status' field
+	var printRecords = [
+		{ fileName: "ABC.pdf", printerId: "1111", date: "2024-10-27", cost: "4 trang A4", type: "pdf", status: "done" },
+		{ fileName: "AZ.pdf", printerId: "1112", date: "2024-10-27", cost: "7 trang A4", type: "pdf", status: "done" },
+		{ fileName: "HCMUT.pdf", printerId: "1111", date: "2024-10-26", cost: "2 trang A4", type: "pdf", status: "pending" },
+		{ fileName: "A.docx", printerId: "1113", date: "2024-10-25", cost: "2 trang A4", type: "docx", status: "error" },
+		{ fileName: "Report.docx", printerId: "1112", date: "2024-10-25", cost: "5 trang A4", type: "docx", status: "done" },
+		{ fileName: "Image.jpg", printerId: "1114", date: "2024-10-24", cost: "1 trang A4", type: "jpg", status: "done" },
+		{ fileName: "Presentation.pptx", printerId: "1111", date: "2024-10-23", cost: "10 trang A4", type: "pptx", status: "pending" },
+		{ fileName: "Data.xlsx", printerId: "1113", date: "2024-10-23", cost: "3 trang A4", type: "xlsx", status: "error" },
+		{ fileName: "Notes.txt", printerId: "1112", date: "2024-10-22", cost: "1 trang A4", type: "txt", status: "done" },
+	];
+
+	function loadRecords(records) {
+		var printHistoryDiv = document.querySelector('.print-history');
+		printHistoryDiv.innerHTML = ''; // Clear existing records
+
+		records.forEach(function (record) {
+			var recordDiv = document.createElement('div');
+			recordDiv.classList.add('record');
+
+			var detailsDiv = document.createElement('div');
+			detailsDiv.classList.add('record-details');
+			detailsDiv.innerHTML = `
+				<p><strong>Tên file:</strong> ${record.fileName}</p>
+				<p><strong>ID máy in:</strong> ${record.printerId}</p>
+				<p><strong>Thời gian:</strong> ${record.date}</p>
+				<p><strong>Chi phí:</strong> ${record.cost}</p>
+				<p style="display: none;"><strong>Loại tài liệu:</strong> ${record.type}</p>
+			`;
+
+			var statusIcon = document.createElement('i');
+			statusIcon.classList.add('status-icon'); // Common class for all status icons
+			statusIcon.setAttribute('aria-label', record.status === 'done' ? 'Hoàn thành' : record.status === 'pending' ? 'Đang xử lý' : 'Lỗi');
+			// Set icon class based on status
+			switch (record.status) {
+				case "done":
+					statusIcon.classList.add('ri-check-line', 'done-icon'); // Checkmark
+					break;
+				case "pending":
+					statusIcon.classList.add('ri-loader-4-line', 'pending-icon'); // loader
+					break;
+				case "error":
+					statusIcon.classList.add('ri-close-circle-line', 'error-icon'); // Circle with X
+					break;
+				default:
+					statusIcon.classList.add('ri-question-mark'); // Question mark (or any other default icon)
+					break;
+			}
+
+			recordDiv.appendChild(detailsDiv);
+			recordDiv.appendChild(statusIcon);
+			printHistoryDiv.appendChild(recordDiv);
+		});
+	}
+	function filterRecords() {
+		console.log("Pressed lọc");
+		var fromDate = document.getElementById('from-date').value;
+		var toDate = document.getElementById('to-date').value;
+		var filterTag = document.querySelector('.filter-tag-input').value;
+
+		var filteredRecords = printRecords.filter(function (record) {
+			var recordDate = new Date(record.date);
+			var from = new Date(fromDate);
+			var to = new Date(toDate);
+
+			return recordDate >= from && recordDate <= to &&
+				(filterTag === '' ||
+					record.fileName.includes(filterTag) ||
+					record.printerId.includes(filterTag) ||
+					record.type.includes(filterTag)
+				);
+		});
+
+		loadRecords(filteredRecords);
+	}
+
+	document.getElementById('filterButton').addEventListener('click', filterRecords);
+
+	// Initial loading of records
+	loadRecords(printRecords);
+</script>

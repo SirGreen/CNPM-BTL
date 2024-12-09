@@ -18,6 +18,7 @@ builder.Services.AddIdentity<StudentAccount, IdentityRole>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddRazorPages();
+builder.Services.AddLogging();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

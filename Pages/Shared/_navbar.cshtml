@@ -158,17 +158,24 @@
 
 <nav class="navbar">
     <div class="nav-left-container">
-        <div class="navbar-brand-container" style="display: flex; align-items: center;">
+        <div class="navbar-brand-container" style="display: flex; align-items: center; cursor: pointer;" onclick="window.location.href='/'">
             <div class="navbar-logo"></div>
             <div class="navbar-brand">Dịch vụ in ấn Bách Khoa</div>
         </div>
 
         <!-- Links moved inside nav-left-container -->
         <div class="navbar-links" style="margin-left: 20px;">
-            @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
-            @Html.ActionLink("Bắt đầu in", "StartPrint", "Student", null, new { @class = "nav-link" })
-            @Html.ActionLink("Xem lịch sử in", "PrintHistory", "Student", null, new { @class = "nav-link" })
-            @Html.ActionLink("Mua thêm trang", "BuyPage", "Student", null, new { @class = "nav-link" })
+            @if (User.Identity != null && User.Identity.IsAuthenticated && user != null)
+            {
+                @Html.ActionLink("Bắt đầu in", "StartPrint", "Student", null, new { @class = "nav-link" })
+                @Html.ActionLink("Xem lịch sử in", "PrintHistory", "Student", null, new { @class = "nav-link" })
+                @Html.ActionLink("Thống kê", "Stats", "Student", null, new { @class = "nav-link" })
+                @Html.ActionLink("Mua thêm trang", "BuyPage", "Student", null, new { @class = "nav-link" })
+            }
+            else
+            {
+
+            }
         </div>
     </div>
     <!-- Right side: Navigation links -->
@@ -179,12 +186,13 @@
                 <span>Số dư: @user.PageLeft trang A4</span>
                 <div class="dropdown-container">
                     <div class="dropdown-trigger">
-                        @Html.ActionLink(@user.UserName, "Account", "Student", null, new { @class = "nav-link" })
+                        @Html.ActionLink(@user.FullName, "Account", "Student", null, new { @class = "nav-link" })
                         <div class="vertical-ellipsis" style="cursor: pointer;">⋮</div>
                     </div>
-                    
+
                     <div class="dropdown-menu" style="display: none;">
                         @Html.ActionLink("Tài khoản", "Account", "Student", null, new { @class = "nav-link" })
+                        @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
                         <a href="/Contact" class="nav-link">Liên hệ</a>
                         <form action="@Url.Action("Logout", "Account")" method="post" class="logout-form">
                             @Html.AntiForgeryToken()
