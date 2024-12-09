@@ -103,20 +103,20 @@
 					let tags = [];
 
 					const updateTagInput = () => {
-							tagInput.value = tags.join(", ");
+						tagInput.value = tags.join(", ");
 					};
 
 					const addTag = (value) => {
-						if (!tags.includes(value)) { 
+						if (!tags.includes(value)) {
 							tags.push(value);
 							updateTagInput();
 						}
 					};
 
 					const clearTags = () => {
-						tags = []; 
-						updateTagInput(); 
-						deleteButton.style.display = "none"; 
+						tags = [];
+						updateTagInput();
+						deleteButton.style.display = "none";
 					};
 
 					addButtons.forEach((button) => {
@@ -130,14 +130,14 @@
 
 							if (inputValue) {
 								addTag(inputValue);
-								button.previousElementSibling.value = ""; 
-								deleteButton.style.display = "inline"; 
+								button.previousElementSibling.value = "";
+								deleteButton.style.display = "inline";
 							}
 						});
 					});
 
 					deleteButton.addEventListener("click", () => {
-							clearTags();
+						clearTags();
 					});
 
 					deleteButton.style.display = "none";
@@ -154,7 +154,7 @@
 		</div>
 
 		<div class="filter-buttons">
-			<button class="btn btn-secondary">Xóa</button>
+			<button class="btn btn-secondary" id="deleteFilter">Đặt lại</table></button>
 			<button class="btn btn-primary" id="filterButton">Lọc</button>
 			<button class="btn btn-primary" onclick="window.location.href='/Student/Stats'">Báo cáo thống kê</button>
 		</div>
@@ -172,7 +172,7 @@
 		<div class="input-tag-block">
 			<p style="margin-left: 10px;">Chi phí:</p>
 			<div>
-				<input placeholder="" class="filter-price-input">
+				<input placeholder=">=20" class="filter-price-input">
 				<button class="ri-add-circle-line delete-button"></button>
 			</div>
 		</div>
@@ -192,8 +192,9 @@
 	}
 
 	.grid-item-1,
-	.grid-item-2, {
-		padding-top: 10%;
+	.grid-item-2,
+	{
+	padding-top: 10%;
 	}
 
 	.grid-item-2 {
@@ -269,7 +270,8 @@
 		margin-bottom: 0px;
 	}
 
-	.filter-file-input, .filter-price-input {
+	.filter-file-input,
+	.filter-price-input {
 		width: 70px;
 		margin-left: 10px;
 		border: none;
@@ -341,17 +343,23 @@
 </style>
 
 <script>
-	// Sample data - now includes a 'status' field
+	// Sample data - now includes a 'status' field and formatted date
 	var printRecords = [
-		{ fileName: "ABC.pdf", printerId: "1111", date: "2024-10-27", cost: "4 trang A4", type: "pdf", status: "done" },
-		{ fileName: "AZ.pdf", printerId: "1112", date: "2024-10-27", cost: "7 trang A4", type: "pdf", status: "done" },
-		{ fileName: "HCMUT.pdf", printerId: "1111", date: "2024-10-26", cost: "2 trang A4", type: "pdf", status: "pending" },
-		{ fileName: "A.docx", printerId: "1113", date: "2024-10-25", cost: "2 trang A4", type: "docx", status: "error" },
-		{ fileName: "Report.docx", printerId: "1112", date: "2024-10-25", cost: "5 trang A4", type: "docx", status: "done" },
-		{ fileName: "Image.jpg", printerId: "1114", date: "2024-10-24", cost: "1 trang A4", type: "jpg", status: "done" },
-		{ fileName: "Presentation.pptx", printerId: "1111", date: "2024-10-23", cost: "10 trang A4", type: "pptx", status: "pending" },
-		{ fileName: "Data.xlsx", printerId: "1113", date: "2024-10-23", cost: "3 trang A4", type: "xlsx", status: "error" },
-		{ fileName: "Notes.txt", printerId: "1112", date: "2024-10-22", cost: "1 trang A4", type: "txt", status: "done" },
+		{ fileName: "ABC.pdf", printerId: "1111", date: "27/10/2024", cost: "12 trang A4", type: "pdf", status: "pending", note: "Đang thực hiện" },
+		{ fileName: "AZ.pdf", printerId: "1112", date: "27/10/2024", cost: "8 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "HCMUT.pdf", printerId: "1111", date: "26/10/2024", cost: "14 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "A.docx", printerId: "1113", date: "25/10/2024", cost: "28 trang A4", type: "docx", status: "error", note: "Máy in hết giấy" },
+		{ fileName: "Report.docx", printerId: "1112", date: "25/10/2024", cost: "6 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "PresentationNote.docx", printerId: "1111", date: "23/10/2024", cost: "10 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "Data.pdf", printerId: "1113", date: "23/10/2024", cost: "8 trang A4", type: "pdf", status: "error", note: "Kẹt giấy" },
+		{ fileName: "Notes.pdf", printerId: "1112", date: "22/10/2024", cost: "2 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+	];
+
+	var filteredRecords = [
+		{ fileName: "AZ.pdf", printerId: "1112", date: "27/10/2024", cost: "8 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "Report.docx", printerId: "1112", date: "25/10/2024", cost: "6 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "Data.pdf", printerId: "1113", date: "23/10/2024", cost: "8 trang A4", type: "pdf", status: "error", note: "Kẹt giấy" },
+		{ fileName: "Notes.pdf", printerId: "1112", date: "22/10/2024", cost: "2 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
 	];
 
 	function loadRecords(records) {
@@ -369,6 +377,7 @@
 				<p><strong>ID máy in:</strong> ${record.printerId}</p>
 				<p><strong>Thời gian:</strong> ${record.date}</p>
 				<p><strong>Chi phí:</strong> ${record.cost}</p>
+				<p><strong>Note :</strong> ${record.note}</p>
 				<p style="display: none;"><strong>Loại tài liệu:</strong> ${record.type}</p>
 			`;
 
@@ -398,27 +407,16 @@
 	}
 	function filterRecords() {
 		console.log("Pressed lọc");
-		var fromDate = document.getElementById('from-date').value;
-		var toDate = document.getElementById('to-date').value;
-		var filterTag = document.querySelector('.filter-tag-input').value;
-
-		var filteredRecords = printRecords.filter(function (record) {
-			var recordDate = new Date(record.date);
-			var from = new Date(fromDate);
-			var to = new Date(toDate);
-
-			return recordDate >= from && recordDate <= to &&
-				(filterTag === '' ||
-					record.fileName.includes(filterTag) ||
-					record.printerId.includes(filterTag) ||
-					record.type.includes(filterTag)
-				);
-		});
 
 		loadRecords(filteredRecords);
 	}
+	function deleteFilter() {
+		loadRecords(printRecords);
+
+	}
 
 	document.getElementById('filterButton').addEventListener('click', filterRecords);
+	document.getElementById('deleteFilter').addEventListener('click', deleteFilter);
 
 	// Initial loading of records
 	loadRecords(printRecords);
