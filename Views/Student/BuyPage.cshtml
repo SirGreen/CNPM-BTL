@@ -7,7 +7,7 @@
   var userId = user?.Id;
 }
 <div class="buy-page-container d-flex flex-row">
-  <div class="flex-fill pe-5">
+  <div class="flex-fill">
     <h1 class="d-flex justify-content-center h-50 align-items-center">
       <strong>Mua thêm trang</strong>
     </h1>
@@ -17,8 +17,8 @@
   </div>
   <form id="BuyPageForm" method="post" asp-controller="Student" asp-action="UpdateAccount">
     <input type="hidden" asp-for="@userId" name="userId" />
-    <div class="m-auto w-50 pe-5">
-      <div class="mb-5 d-flex flex-column">
+    <div class="w-50 pe-5" style="margin-top: 70px;">
+      <div class="right-container mb-5 d-flex flex-column">
         <label class="page-num-text lh-lg">Số trang A4 mua thêm</label>
         <input type="number" id="pageLeft" name="pageLeft" class="page-num-control " placeholder="Nhập vào số trang" />
         <div class="price mt-1">Đơn giá: 500 VNĐ/trang</div>
@@ -26,7 +26,7 @@
 
       <div class="mb-5 d-flex flex-column">
         <label class="payment-method-text lh-lg">Phương thức thanh toán</label>
-        <div>
+        <div style="width: 500px;">
           <button class="payment-method-button">Thẻ ngân hàng</button>
           <button class="payment-method-button">PayPal</button>
           <button class="payment-method-button">BkPay</button>
