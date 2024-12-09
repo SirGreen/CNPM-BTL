@@ -27,7 +27,7 @@
                     <h5><strong>Loại file đã sử dụng</strong></h5>
                 </div>
                 <div>
-                    <canvas class="w-75 h-auto ms-4" id="FileType"></canvas>
+                    <canvas class="w-75 h-auto ms-4 mt-3" id="FileType"></canvas>
                 </div>
                 
             </div>
@@ -48,16 +48,16 @@
                 <div class="text-start">
                     <h5><strong>Trạng thái in hiện tại</strong></h5>
                 </div>
-                <img src="/image/printer.png" alt="Printer Icon" class="printer-icon mt-1" />
+                <img src="~/images/printer" alt="Printer Icon" class="printer-icon mt-1" />
             </div>
 
         </div>
        
     </div>
 
-    <div class="right-box m-4 ">
-        <div>
-            <canvas id="PageUsage"></canvas>
+    <div class="right-box m-4 justify-content-center align-content-center">
+        <div >
+            <canvas style="width: 587.58px; height: 542.58px;" id="PageUsage"></canvas>
         </div>
     </div>
 
@@ -65,38 +65,102 @@
 
 
 <script>
-    const ctx = document.getElementById('FileType');
-
-    new Chart(ctx, {
+    const doughnut = document.getElementById('FileType');
+    new Chart(doughnut, {
       type: 'doughnut',
       data: {
         labels: ['.DOC', '.PDF'],
         datasets: [{
-          label: '# of Files',
+          label: 'Số tài liệu',
           data: [1, 4],
-          backgroundColor: [
-           'rgb(255, 3, 3)',
-           'rgb(0, 182, 6)'
-          ]
+          backgroundColor: ['rgb(255, 3, 3)', 'rgb(0, 182, 6)']
         }]
+      },
+      options: {
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { 
+                    font: {size: 14,}
+                
+                }
+            },
+        }
       },
     });
 </script>
 
 <script>
-    const ctx1 = document.getElementById('PageUsage');
-
-    new Chart(ctx1, {
+    const line = document.getElementById('PageUsage');
+    new Chart(line, {
       type: 'line',
       data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
-          label: '# of Pages',
+          label: 'Số trang',
           data: [20, 12, 9, 50, 30, 78, 80, 25, 0, 52, 24, 45],
           borderColor: 'rgb(2, 163, 248)', 
+          borderWidth: 5,
           tension: 0.4, 
+          pointRadius: 0,
           pointHoverRadius: 7,
-        }]
+        }],
+      },
+      options: {
+         plugins: {
+            legend: {
+                display: true, 
+                position: 'bottom', 
+                labels: {
+                    font: {
+                        size: 14, 
+                    }
+                }
+            },
+            title: {
+                display: true, 
+                text: 'Lưu lượng trang sử dụng hàng tháng', 
+                position: 'bottom',
+                font: {
+                    size: 18, 
+                    weight: 'bold',
+                },
+            },
+         },
+         scales: {
+            x: {
+                ticks: {
+                    padding: 10,
+                },
+                grid: {
+                    display: true,
+                    color:'#8E8E8E',
+                    drawTicks: false,
+                },
+                border: {
+                    width: 2,
+                    color: 'black',
+                },
+            },
+            y: {
+               beginAtZero: true,
+                ticks: {
+                    stepSize: 25,
+                    padding: 10,
+                },
+                grid: {
+                    display: true,
+                    color:'#8E8E8E',
+                    drawTicks: false,
+                },
+                border: {
+                    width: 2,
+                    color: 'black',
+                },
+                min: 0, 
+                max: 100, 
+            },
+         },
       },
     });
 </script>
