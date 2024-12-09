@@ -169,6 +169,12 @@ img {
 .printer-icon {
   width: 150px;
   height: 150px;
+  cursor: pointer;
+  transition: transform .2s;
+}
+
+.printer-icon:hover {
+   transform: scale(1.25);
 }
 
 .right-box {
