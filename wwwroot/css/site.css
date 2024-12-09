@@ -31,6 +31,23 @@ html {
   background-color: #444;
 }
 
+.black-button-outline {
+  background-color: rgb(255, 255, 255);
+  border: 2px solid black;
+  border-color: #000000;
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.black-button-outline:hover {
+  background-color: #000000;
+  color: rgb(255, 255, 255);
+}
+
 html {
   position: relative;
   min-height: 100%;
@@ -54,13 +71,14 @@ body {
   height: 410px;
 }
 
-.page-num-text, .payment-method-text {
+.page-num-text,
+.payment-method-text {
   font-size: 14px;
   font-weight: 600;
 }
 
 .page-num-control {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-sizing: border-box;
   padding: 8px 12px;
   width: 520px;
@@ -88,10 +106,11 @@ body {
 }
 
 .payment-method-button:hover {
-   background-color: #e7e7e7;
+  background-color: #e7e7e7;
 }
 
-.cancel-button, .buy-button{
+.cancel-button,
+.buy-button {
   font-size: 16px;
   font-weight: 600;
   justify-content: center;
@@ -114,12 +133,43 @@ body {
   background-color: #444;
 }
 
+.config-button {
+  background-color: rgb(240, 240, 240);
+  color: rgb(0, 0, 0);
+  border: none;
+  padding: 10px 20px;
+  margin-left: 5px; /* Khoảng cách 20px với phần tử bên trái */
+  margin-right: 5px; /* Khoảng cách 20px với phần tử bên phải */
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.config-button:hover {
+  background-color: #cccccc;
+}
+
+.btn-check:checked + .config-button {
+  background-color: #000000;
+  color: white;
+}
+
+.form-check-input {
+  background-color: #ffffff;
+  border-color: #000000;
+}
+
+.form-check-input:checked {
+  background-color: #000000;
+}
+
 .account-container {
   width: 1440px;
   height: 458px;
 }
 
-.account {    
+.account {
   width: 1100px;
   height: 338px;
 }
@@ -134,7 +184,7 @@ body {
 .account-info {
   width: 1100px;
   height: 50px;
-  background: #FFFCFC;
+  background: #fffcfc;
   border: 1.6px solid #000000;
 }
 

@@ -1,17 +1,27 @@
+@model PageConfigModel
 @{
-    ViewData["Title"] = "Thống kê";
+    ViewData["Title"] = "Cài đặt in ấn";
 }
-<!DOCTYPE html>
-<html lang="en">
+@{
+    Layout = "_Layout";
+}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF File Preview</title>
     <style>
         #pdf-preview {
-            width: 100%;
-            height: 600px;
+            width: 70%;
+            height: 1000px;
+            using Microsoft.AspNetCore.Authorization.Infrastructure;
+            using Microsoft.AspNetCore.Authorization.Infrastructure;
+            using Microsoft.AspNetCore.Components;
             border: none;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: black;
+            padding: 20px;
+            overflow-y: auto;
         }
 
         #file-info {
@@ -23,26 +33,347 @@
             font-weight: bold;
             margin-top: 10px;
         }
+
+        #pdf-preview canvas {
+            margin: 10px auto;
+            width: 100%;
+            height: auto;
+        }
     </style>
 </head>
-<body>
 
-    <h2>PDF File Preview</h2>
+<body>
+    <div class="container-fluid text-left p-0">
+        <div class="text-center p-5 m-3">
+            <h1 class="display-5 fw-bold">Cài đặt in ấn</h1>
+            <p class="text-center m-4">Chỉnh sửa để in theo ý muốn</p>
+        </div>
+        <!-- Begin Config Form -->
+        @* @using (Html.BeginForm("PageConfig", "Student", FormMethod.Post, new { @class = "config-form" }))
+            { *@
+        <form id="printConfig" class="row align-items-center m-5 mt-0">
+            @* Left side: Paper size and number of printed sides *@
+            <div class="m-4 mt-0 col">
+                <!-- Page Size -->
+                <div class="col">
+                    <p class="fw-bold ">Cỡ giấy</p>
+                    <div class="btn-group">
+                        @Html.RadioButtonFor(m => m.PageSize, "2", new
+                            {
+                                @class = "btn-check",
+                                id = "selectSize1",
+                                value = "2",
+                            })
+                        <label class="config-button px-5" for="selectSize1">A3</label>
+                        @Html.RadioButtonFor(m => m.PageSize, "1", new
+                            {
+                                @class = "btn-check",
+                                id = "selectSize2",
+                                value = "1",
+                            })
+                        <label class="config-button px-5" for="selectSize2">A4</label>
+                        @Html.ValidationMessageFor(m => m.PageSize, "", new { @class = "error-message" })
+                    </div>
+                    <p class="text-secondary mt-3">1 trang A3 = 2 trang A4</p>
+                </div>
+                <!-- Page Sided -->
+                <div class="col">
+                    <p class="fw-bold ">Một / Hai mặt</p>
+                    <div class="btn-group">
+                        @Html.RadioButtonFor(m => m.PageSide, "1", new
+                            {
+                                @class = "btn-check",
+                                id = "selectSide1",
+                                value = "1",
+                            })
+                        <label class="config-button px-5" for="selectSide1">Một</label>
+                        @Html.RadioButtonFor(m => m.PageSide, "2", new
+                            {
+                                @class = "btn-check",
+                                id = "selectSide2",
+                                value = "2",
+                            })
+                        <label class="config-button px-5" for="selectSide2">Hai</label>
+                        @Html.ValidationMessageFor(m => m.PageSide, "", new { @class = "error-message" })
+                    </div>
+                    <p class="text-secondary mt-3">Giá một mặt = 2 lần giá hai mặt</p>
+                </div>
+            </div>
+            @* Right side: Copy number and page select *@
+            <div class="m-4 mt-0 col">
+                <!-- Numbers of Copy -->
+                <div class="col m-3">
+                    <p class="fw-bold">Số bản copy</p>
+                    @Html.TextBoxFor(m => m.CopyNum, new
+                        {
+                            @class = "form-control mb-3",
+                            @id = "CopyNumValue",
+                            placeholder
+                             = "Tùy chọn",
+                            @type = "number",
+                            oninput = "clearCopyNumRadio()"
+                        })
+                    <div class="button-group">
+                        @Html.RadioButtonFor(m => m.CopyNum, "1", new
+                            {
+                                @class = "btn-check",
+                                id = "selectNum1",
+                                value = "1",
+                                name = "CopyNumSelect",
+                                onchange = "updateCopyNum(this.value)" @*Tự update số bản copy theo nút chọn*@
+                            })
+                        <label class="config-button px-5" for="selectNum1">1</label>
+                        @Html.RadioButtonFor(m => m.CopyNum, "2", new
+                            {
+                                @class = "btn-check",
+                                id = "selectNum2",
+                                value = "2",
+                                name = "CopyNumSelect",
+                                onchange = "updateCopyNum(this.value)"
+                            })
+                        <label class="config-button px-5" for="selectNum2">2</label>
+                        @Html.RadioButtonFor(m => m.CopyNum, "3", new
+                            {
+                                @class = "btn-check",
+                                id = "selectNum3",
+                                value = "3",
+                                name = "CopyNumSelect",
+                                onchange = "updateCopyNum(this.value)"
+                            })
+                        <label class="config-button px-5" for="selectNum3">3</label>
+                        @Html.RadioButtonFor(m => m.CopyNum, "4", new
+                            {
+                                @class = "btn-check",
+                                id = "selectNum4",
+                                value = "4",
+                                name = "CopyNumSelect",
+                                onchange = "updateCopyNum(this.value)"
+                            })
+                        <label class="config-button px-5" for="selectNum4">4</label>
+                        @Html.ValidationMessageFor(m => m.CopyNum, "", new { @class = "error-message" })
+                    </div>
+                </div>
+                <!-- Page Select -->
+                <div class="col m-3">
+                    <div class="row">
+                        <div class="col-2">
+                            <p class="fw-bold">Trang</p>
+                        </div>
+                        <div class="col-10 fw-bold">
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(m => m.PageSelect, "all", new
+                                    {
+                                        @class = "form-check-input",
+                                        id = "selectOption1",
+                                        value = "all",
+                                        name = "PageSelect",
+                                        @*Tự update lựa chọn trang theo nút chọn*@
+                                        onchange = "updatePageSelect(this.value)"
+                                    })
+                                <label class="form-check-label" for="selectOption1">Tất cả</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(m => m.PageSelect, "even", new
+                                    {
+                                        @class = "form-check-input",
+                                        id = "selectOption2",
+                                        value = "even",
+                                        name = "PageSelect",
+                                        @*Tự update lựa chọn trang theo nút chọn*@
+                                        onchange = "updatePageSelect(this.value)"
+                                    })
+                                <label class="form-check-label" for="selectOption2">Trang chẵn</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(m => m.PageSelect, "odd", new
+                                    {
+                                        @class = "form-check-input",
+                                        id = "selectOption3",
+                                        value = "odd",
+                                        name = "PageSelect",
+                                        @*Tự update lựa chọn trang theo nút chọn*@
+                                        onchange = "updatePageSelect(this.value)"
+                                    })
+                                <label class="form-check-label" for="selectOption3">Trang lẻ</label>
+                            </div>
+                        </div>
+                        <div class="form-check fw-bold ms-3 mb-3">
+                            @Html.RadioButtonFor(m => m.PageSelect, "custom", new
+                                {
+                                    @class = "form-check-input",
+                                    id = "selectOption4",
+                                    value = "custom",
+                                    name = "PageSelect",
+                                    @*Tự update lựa chọn trang theo nút chọn*@
+                                    onchange = "updatePageSelect(this.value)"
+                                })
+                            <label class="form-check-label" for="selectOption4">Tùy chọn</label>
+                        </div>
+                        @Html.TextBoxFor(m => m.PageSelect, new
+                            {
+                                @class = "form-control mb-3",
+                                @id = "PageSelectValue",
+                                @* @type = "number", *@
+                                placeholder = "e.g 1-5, 11-13",
+                                oninput = "clearPageSelectedRadio()"
+                            })
+                    </div>
+                    <p class="text-secondary" id="pageCount">Tổng giá dự kiến: ... trang</p>
+                </div>
+            </div>
+            <!-- Submit Button -->
+            <div class="text-center m-5">
+                <button type="reset" class="black-button-outline mt-4 p-3 col-3" id="resetConfig">Đặt lại</button>
+                <button type="submit" class="black-button mt-4 p-3 col-3">In</button>
+            </div>
+        </form>
+        <script>
+            const inputCopyNum = document.getElementById('CopyNumValue')
+            const radioCopyNum = document.querySelectorAll('input[name="CopyNum"]')
+            const inputPageSelect = document.getElementById('PageSelectValue')
+            const radioPageSelect = document.querySelectorAll('input[name="PageSelect"]')
+
+            function updateCopyNum(value) {
+                inputCopyNum.value = value;
+            }
+            function clearCopyNumRadio() {
+                radioCopyNum.forEach(radio => radio.checked = false);
+            }
+            function updatePageSelect(value) {
+                inputPageSelect.value = "";
+            }
+            function clearPageSelectedRadio() {
+                radioPageSelect.forEach(radio => {
+                    radio.checked = (radio.value === "custom")
+                });
+            }
+            function SelectedPage(type) {
+                var pageNumbers = [];
+                if (type == "radio") {
+                    var value = document.querySelector('input[name="PageSelect"]:checked').value
+                    if (value == "odd") {
+                        for (let i = 1; i <= totalPages; i += 2) {
+                            if (pageNumbers.includes(i)) continue
+                            else pageNumbers.push(i);
+                        }
+                    } else if (value == "even") {
+                        for (let i = 2; i <= totalPages; i += 2) {
+                            if (pageNumbers.includes(i)) continue
+                            else pageNumbers.push(i);
+                        }
+                    } else if (value == "all") {
+                        for (let i = 1; i <= totalPages; i++) {
+                            if (pageNumbers.includes(i)) continue
+                            else pageNumbers.push(i);
+                        }
+                    }
+                } else if (type == "text") {
+                    var pageInp = document.getElementById("PageSelectValue").value.trim()
+                    let pageRanges = pageInp.split(",")
+
+                    pageRanges.forEach(range => {
+                        let pages = range.split("-")
+                        if (pages.length === 2) {
+                            let startPage = parseInt(pages[0]);
+                            let endPage = parseInt(pages[1]);
+
+                            // Kiểm tra tính hợp lệ
+                            if (isNaN(startPage) || isNaN(endPage) || startPage > endPage) {
+                                console.log("Nhập liệu không hợp lệ.");
+                            } else {
+                                for (let i = startPage; i <= endPage; i++) {
+                                    if (pageNumbers.includes(i)) continue
+                                    else pageNumbers.push(i);
+                                }
+                            }
+                        } else if (pages.length === 1 && pages[0] !== "") {
+                            pageNumbers.push(parseInt(pages[0]));
+                        }
+                    })
+                }
+                return pageNumbers
+            }
+
+            var pageSelect = []
+            document.getElementById("printConfig").addEventListener("input", function (e) {
+                // Lấy giá trị của tất cả các trường input
+                var pageSize = document.querySelector('input[name="PageSize"]:checked')
+                if (pageSize != null) {
+                    pageSize = parseInt(pageSize.value)
+                }
+                var pageSide = document.querySelector('input[name="PageSide"]:checked')
+                if (pageSide != null) {
+                    pageSide = parseInt(pageSide.value)
+                }
+                var copyNum = parseInt(document.getElementById("CopyNumValue").value);
+                if (e.target.type == "radio" && e.target.name == "CopyNum") {
+                    copyNum = parseInt(document.querySelector('input[name="CopyNum"]:checked').value);
+                }
+                if (e.target.id == "PageSelectValue" || e.target.name == "PageSelect") {
+                    pageSelect = SelectedPage(e.target.type)
+                    numOfSelectedPage = pageSelect.length
+                }
+
+                // Kiểm tra nếu tất cả các field đều có giá trị
+                if (pageSize && copyNum && pageSelect && pageSide && numOfSelectedPage) {
+                    // Nếu tất cả field đã điền, tính giá dự kiến và cho phép bấm nút in
+                    console.log("Page size, sides, number of copies, select index:", pageSize, pageSide, copyNum, pageSelect);
+                    var pageSideWeight = (pageSide==2)?1:2;
+                    updatePageCostCount(pageSize * copyNum * numOfSelectedPage * pageSideWeight);
+                    updatePdfPageCount(numOfSelectedPage)
+                    pageCount = numOfSelectedPage
+
+                    pdfPreview.innerHTML = '';
+                    for (let i = 0; i < pageCount; i++) {
+                        renderPage(pageSelect[i])
+                    }
+                }
+            });
+
+            function updatePageCostCount(pages) {
+                document.getElementById('pageCount').innerHTML = `Tổng giá dự kiến: ${pages} trang`;
+            }
+
+            document.getElementById('resetConfig').addEventListener('click', function (e) {
+                console.warn("Config form has been reset!");
+                pageCount = totalPages
+                updatePageInfo(totalPages)
+                updatePageCostCount("...")
+                updatePdfPageCount(totalPages)
+
+                pdfPreview.innerHTML = '';
+                pageSelect = []
+                for (let i = 1; i <= totalPages; i++) {
+                    pageSelect.push(i);
+                    renderPage(i)
+                }
+            })
+        </script>
+        @* } *@
+    </div>
+
+    <h2 class="text-center display-6">Print Preview</h2>
 
     <!-- Display file name -->
     <div id="file-name"></div>
     <div id="file-info"></div>
+    <div id="page-count"></div>
 
-    <iframe id="pdf-preview" style="display:none;"></iframe>
+    <div id="pdf-preview" class="container mb-5"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
+        var pageCount, totalPages
         const pdfPreview = document.getElementById('pdf-preview');
         const fileNameDisplay = document.getElementById('file-name');
         const fileInfo = document.getElementById('file-info');
 
+        @* const canvas = document.getElementById('pdf-canvas'); *@
+        const pageInfo = document.getElementById('page-info');
+        var pdf = null
+
         // Retrieve the file data (both name and content) from localStorage
         const savedFile = JSON.parse(localStorage.getItem('uploadedFile'));
-
         if (savedFile) {
             const fileName = savedFile.name;
             const fileData = savedFile.data;
@@ -52,18 +383,54 @@
 
             // Check if the file is a PDF by checking the base64 data type
             if (fileData.startsWith('data:application/pdf')) {
-                // Set the base64 string as the source for the iframe
-                pdfPreview.src = fileData;
-                pdfPreview.style.display = 'block';
                 fileInfo.textContent = "PDF preview loaded from localStorage.";
+
+                // Set the base64 string as the source for the iframe
+                var base64String = fileData.split(',')[1];
+                // Split get the pdf part only to render
+                var typedarray = new Uint8Array(atob(base64String).split('').map(function (c) {
+                    return c.charCodeAt(0);
+                }));
+
+                // Sử dụng PDF.js để rener và lấy số trang
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+                pdfjsLib.getDocument(typedarray).promise.then(function (loadedPdf) {
+                    pdf = loadedPdf
+                    // Lấy số trang từ PDF
+                    totalPages = pageCount = pdf.numPages;
+                    updatePdfPageCount(totalPages)
+                    for (i = 1; i <= totalPages; i++) {
+                        pageSelect.push(i)
+                        renderPage(i)
+                    }
+                });
             } else {
                 fileInfo.textContent = "File loaded from localStorage: This is not a PDF file.";
+            }
+            function updatePdfPageCount(totalPages) {
+                document.getElementById('page-count').innerText = 'Number of pages: ' + totalPages;
             }
         } else {
             fileInfo.textContent = "No file found in localStorage.";
         }
+        function renderPage(pageNumber) {
+            pdf.getPage(pageNumber).then(page => {
+                const canvas = document.createElement('canvas');
+                const viewport = page.getViewport({ scale: 1.5 });
+                const context = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.id = `page-${pageNumber}`; // Đặt ID cho từng canvas
+                pdfPreview.appendChild(canvas);
+
+                page.render({
+                    canvasContext: context,
+                    viewport: viewport,
+                });
+            });
+        }
     </script>
 
 </body>
-</html>
 
+</html>
