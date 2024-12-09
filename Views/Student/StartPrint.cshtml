@@ -35,7 +35,7 @@
 	</div>
 
 	<div class="ContinueButtonBox">
-		<a class="ContinueButton" href="/Student/PageConfig" class="ContinueButton">Tiếp tục</a>
+		<a id="continueButton" class="ContinueButton disabled" href="/Student/PageConfig" style="pointer-events: none; opacity: 0.5;">Tiếp tục</a>
 	</div>
 
 	<!-- Lựa máy in -->
@@ -185,11 +185,11 @@
     width: 60%;
     border-radius: 10px;
     text-align: center;
-    position: fixed; /* Keeps modal fixed */
+    position: fixed; 
 		top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
-    overflow: hidden; /* Prevent scrolling of the entire modal */
+    overflow: hidden; 
 	}
 	.modalContentHeader {
 		display: flex;
@@ -217,8 +217,8 @@
 		width: 100%;
 		border: 2px solid black;
 		border-radius: 10px;
-		height: 400px; /* Set a fixed height */
-		overflow-y: auto; /* Enable scrolling for the list */
+		height: 400px; 
+		overflow-y: auto;
 		padding: 10px;
 		margin-top: 10px;
 	}
@@ -241,6 +241,23 @@
 <script>
 	const fileInput = document.getElementById('fileInput');
 	const documentButton = document.getElementById('documentButton');
+	
+	const continueButton = document.getElementById('continueButton');
+
+	let isFileValid = false;
+	let isPrinterChosen = false;
+
+	const updateContinueButtonState = () => {
+		if (isFileValid && isPrinterChosen) {
+			continueButton.classList.remove('disabled');
+			continueButton.style.pointerEvents = 'auto';
+			continueButton.style.opacity = '1';
+		} else {
+			continueButton.classList.add('disabled');
+			continueButton.style.pointerEvents = 'none';
+			continueButton.style.opacity = '0.5';
+		}
+	};
 
 	fileInput.addEventListener('change', (event) => {
 		const file = event.target.files[0];
@@ -249,6 +266,19 @@
 			const validExtensions = ['.pdf', '.docx'];
 
 			if (validExtensions.some(ext => fileName.toLowerCase().endsWith(ext))) {
+				isFileValid = true;
+
+				// Optionally save file to localStorage
+				const reader = new FileReader();
+				reader.onload = () => {
+					const fileData = {
+						name: fileName,
+						data: reader.result
+					};
+					localStorage.setItem('uploadedFile', JSON.stringify(fileData));
+				};
+				reader.readAsDataURL(file);
+
 				documentButton.textContent = fileName; 
 				documentButton.style.color = 'green';
 			} else {
@@ -256,10 +286,13 @@
 				fileInput.value = '';
 				documentButton.textContent = 'Chọn tài liệu để tải'; 
 				documentButton.style.color = 'black';
+				isFileValid = false;
 			}
 		} else {
 			documentButton.textContent = 'Chọn tài liệu để tải'; 
+			isFileValid = false;
 		}
+		updateContinueButtonState();
 	});
 
 
@@ -279,9 +312,11 @@
 
 	printerButtons.forEach(button => {
 		button.addEventListener('click', () => {
-				const printerName = button.querySelector('.printerButtonName').textContent;
-				printBoxText.textContent = `Hiện tại: ${printerName}`;
-				printerModal.style.display = 'none'; 
+			const printerName = button.querySelector('.printerButtonName').textContent;
+			printBoxText.textContent = `Hiện tại: ${printerName}`;
+			printerModal.style.display = 'none'; 
+			isPrinterChosen = true;
+			updateContinueButtonState();
 		});
 	});
 
