@@ -1,4 +1,167 @@
 @{
-    ViewData["Title"] = "Thống kê";
+    ViewData["Title"] = "Stats";
 }
-Chi tiết
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="w-5 mt-3 ">
+    <h2><strong>Báo cáo thống kê</strong></h2>
+</div>
+
+<div class=" d-flex flex-row">
+    
+    <div class="flex-fill">
+        <div class="d-flex flex-row">
+            <div class="left-box m-4 me-5">
+                <div class="text-start">
+                    <h5><strong>Số lần đã in</strong></h5>
+                </div>
+                <div class="number">5</div>
+                <div>
+                    <h5><strong>Lần</strong></h5>
+                </div>
+                <div class="text-muted">= Bằng so với tháng trước</div>
+            </div>
+
+            <div class="left-box m-4">
+                <div class="text-start">
+                    <h5><strong>Loại file đã sử dụng</strong></h5>
+                </div>
+                <div>
+                    <canvas class="w-75 h-auto ms-4 mt-3" id="FileType"></canvas>
+                </div>
+                
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-row">
+            
+            <div class="left-box m-4 me-5">
+                <div class="text-start">
+                    <h5><strong>Số trang đã mua</strong></h5>
+                </div>
+                <div class="number">4</div>
+                <div><h5><strong>Trang</strong></h5></div>
+                <div><span style="color: red;">&#9660; 50% so với tháng trước</span></div>
+            </div>
+
+            <div class="left-box m-4">
+                <div class="text-start">
+                    <h5><strong>Trạng thái in hiện tại</strong></h5>
+                </div>
+                <img src="/images/printer.png" alt="Printer Icon" class="printer-icon mt-3" onclick="window.location.href='/Student/PrintHistory';" />
+            </div>
+
+        </div>
+       
+    </div>
+
+    <div class="right-box m-4 justify-content-center align-content-center">
+        <div >
+            <canvas style="width: 587.58px; height: 542.58px;" id="PageUsage"></canvas>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    const doughnut = document.getElementById('FileType');
+    new Chart(doughnut, {
+      type: 'doughnut',
+      data: {
+        labels: ['.DOC', '.PDF'],
+        datasets: [{
+          label: 'Số tài liệu',
+          data: [1, 4],
+          backgroundColor: ['rgb(255, 3, 3)', 'rgb(0, 182, 6)']
+        }]
+      },
+      options: {
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { 
+                    font: {size: 14,}
+                
+                }
+            },
+        }
+      },
+    });
+</script>
+
+<script>
+    const line = document.getElementById('PageUsage');
+    new Chart(line, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+          label: 'Số trang',
+          data: [20, 12, 9, 50, 30, 78, 80, 25, 0, 52, 24, 45],
+          borderColor: 'rgb(2, 163, 248)', 
+          borderWidth: 5,
+          tension: 0.4, 
+          pointRadius: 0,
+          pointHoverRadius: 7,
+        }],
+      },
+      options: {
+         plugins: {
+            legend: {
+                display: true, 
+                position: 'bottom', 
+                labels: {
+                    font: {
+                        size: 14, 
+                    }
+                }
+            },
+            title: {
+                display: true, 
+                text: 'Lưu lượng trang sử dụng hàng tháng', 
+                position: 'bottom',
+                font: {
+                    size: 18, 
+                    weight: 'bold',
+                },
+            },
+         },
+         scales: {
+            x: {
+                ticks: {
+                    padding: 10,
+                },
+                grid: {
+                    display: true,
+                    color:'#8E8E8E',
+                    drawTicks: false,
+                },
+                border: {
+                    width: 2,
+                    color: 'black',
+                },
+            },
+            y: {
+               beginAtZero: true,
+                ticks: {
+                    stepSize: 25,
+                    padding: 10,
+                },
+                grid: {
+                    display: true,
+                    color:'#8E8E8E',
+                    drawTicks: false,
+                },
+                border: {
+                    width: 2,
+                    color: 'black',
+                },
+                min: 0, 
+                max: 100, 
+            },
+         },
+      },
+    });
+</script>
