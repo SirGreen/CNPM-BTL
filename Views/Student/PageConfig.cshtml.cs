@@ -16,7 +16,7 @@ public class PageConfigModel : PageModel
 
     public void OnGet()
     {
-
+        _logger.LogInformation("Hello config");
     }
     [Required(ErrorMessage = "Hãy chọn loại giấy")]
     [Display(Name = "Cỡ giấy")]
