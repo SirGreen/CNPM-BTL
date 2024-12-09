@@ -1,3 +1,10 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<StudentAccount> UserManager
+@{
+    // Get the currently logged-in user
+    var user = await UserManager.GetUserAsync(User);
+}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,13 +17,19 @@
             padding: 0;
         }
 
-        /* Navbar container */
         .navbar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
+            /* Remove justify-content: space-between; */
+            padding: 5px 20px;
             border-bottom: 1px solid #ddd;
+        }
+
+        .nav-left-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* Adjust as needed */
         }
 
         /* Logo circle */
@@ -84,40 +97,101 @@
             /* Remove underline on hover */
         }
 
-        /* Container to align items inline */
+        /* ... other styles ... */
+
         .nav-right-container {
-            display: inline-flex;
-            /* Keeps the Account and Logout inline */
+            margin-left: auto;
+            display: flex;
             align-items: center;
-            /* Vertically centers items */
             gap: 10px;
-            /* Adds spacing between Account and Logout */
+        }
+
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-trigger {
+            cursor: pointer;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 10;
+            padding: 5px;
+            /* Adjust as needed */
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            /* Optional shadow */
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 12px;
+            /* Adjust as needed */
+            text-decoration: none;
+            color: #212529;
+        }
+
+        .dropdown-menu form {
+            margin: 0;
+        }
+
+        .dropdown-menu .logout-button {
+            font-size: 14px;
+        }
+
+        /* Hover effect on links */
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+            /* Adjust as needed */
         }
     </style>
 </head>
 
 <nav class="navbar">
-    <!-- Left side: Logo and brand name -->
-    <div class="navbar-brand-container" style="display: flex; align-items: center;">
-        <div class="navbar-logo"></div>
-        <div class="navbar-brand">Dịch vụ in ấn Bách Khoa</div>
-    </div>
+    <div class="nav-left-container">
+        <div class="navbar-brand-container" style="display: flex; align-items: center;">
+            <div class="navbar-logo"></div>
+            <div class="navbar-brand">Dịch vụ in ấn Bách Khoa</div>
+        </div>
 
+        <!-- Links moved inside nav-left-container -->
+        <div class="navbar-links" style="margin-left: 20px;">
+            @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
+            @Html.ActionLink("Bắt đầu in", "StartPrint", "Student", null, new { @class = "nav-link" })
+            @Html.ActionLink("Xem lịch sử in", "PrintHistory", "Student", null, new { @class = "nav-link" })
+            @Html.ActionLink("Mua thêm trang", "BuyPage", "Student", null, new { @class = "nav-link" })
+        </div>
+    </div>
     <!-- Right side: Navigation links -->
     <div class="navbar-links">
-        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        @if (User.Identity != null && User.Identity.IsAuthenticated && user != null)
         {
             <div class="nav-right-container">
-                @Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link" })
-                @Html.ActionLink("Xem lịch sử in", "PrintHistory", "Student", null, new { @class = "nav-link" })
-                @Html.ActionLink("Mua thêm trang", "BuyPage", "Student", null, new { @class = "nav-link" })
-                <a href="/Contact" class="nav-link">Liên hệ</a>
-                @Html.ActionLink("Tài khoản", "Account", "Student", null, new { @class = "nav-link" })
-
-                <form action="@Url.Action("Logout", "Account")" method="post" class="logout-form">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="logout-button">Đăng xuất</button>
-                </form>
+                <span>Số dư: @user.PageLeft trang A4</span>
+                <div class="dropdown-container">
+                    <div class="dropdown-trigger">
+                        @Html.ActionLink(@user.UserName, "Account", "Student", null, new { @class = "nav-link" })
+                        <div class="vertical-ellipsis" style="cursor: pointer;">⋮</div>
+                    </div>
+                    
+                    <div class="dropdown-menu" style="display: none;">
+                        @Html.ActionLink("Tài khoản", "Account", "Student", null, new { @class = "nav-link" })
+                        <a href="/Contact" class="nav-link">Liên hệ</a>
+                        <form action="@Url.Action("Logout", "Account")" method="post" class="logout-form">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="logout-button">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
         }
@@ -131,4 +205,37 @@
             </div>
         }
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all dropdown trigger elements
+            var dropdownTriggers = document.querySelectorAll('.dropdown-trigger');
+
+            dropdownTriggers.forEach(function (trigger) {
+                trigger.addEventListener('click', function () {
+                    // Get the next sibling element, which is the dropdown menu
+                    var dropdownMenu = this.nextElementSibling;
+
+                    // Toggle the display property
+                    if (dropdownMenu.style.display === 'none') {
+                        dropdownMenu.style.display = 'block';
+                    } else {
+                        dropdownMenu.style.display = 'none';
+                    }
+                });
+            });
+
+            // Optional: Close the dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                var isInsideDropdown = event.target.closest('.dropdown-container');
+
+                if (!isInsideDropdown) {
+                    var dropdownMenus = document.querySelectorAll('.dropdown-menu');
+                    dropdownMenus.forEach(function (menu) {
+                        menu.style.display = 'none';
+                    });
+                }
+            });
+        });
+    </script>
 </nav>

@@ -1,0 +1,68 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<StudentAccount> UserManager
+@{
+    ViewData["Title"] = "Admin debug";
+    var user = await UserManager.GetUserAsync(User);
+    var userId = user?.Id;
+    var email = user?.Email;
+    var fullName = user?.FullName;
+    var pageLeft = user?.PageLeft;
+}
+
+<div class="account-container ms-5 mt-5 ps-5">
+    <div class="account justify-content-center align-content-center">
+        <h1 class=""><strong>Thông tin tài khoản</strong></h1>
+
+        <div class="account-form mt-5">
+            <form id="accountForm" method="post" asp-controller="Student" asp-action="UpdateAccount">
+                @* Hidden field for user ID *@
+                <input type="hidden" asp-for="@userId" name="userId" />
+                <div class="account-info d-flex justify-content-between">
+                    <label for="email" class="ms-3"><strong>Email</strong></label>
+                    <input type="email" id="email" name="email" class="form-control me-3" style="max-width: 300px;" value="@email" readonly />
+                </div>
+
+                <div class="account-info d-flex justify-content-between">
+                    <label for="fullName" class="ms-3"><strong>Họ và tên</strong></label>
+                    <input type="text" id="fullName" name="fullName" class="form-control me-3" style="max-width: 300px;" value="@fullName" />
+                </div>
+
+                <div class="account-info">
+                    <strong class="ms-3">Đổi mật khẩu</strong>
+                </div>
+
+                <div class="account-info d-flex justify-content-between">
+                    <label for="password" class="ms-3"><strong>Mật khẩu mới</strong></label>
+                    <input type="password" id="password" name="password" class="form-control me-3" style="max-width: 300px;" />
+                </div>
+
+                <div class="account-info d-flex justify-content-between">
+                    <label for="confirmPassword" class="ms-3"><strong>Xác nhận mật khẩu</strong></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control me-3" style="max-width: 300px;" />
+                </div>
+
+                <div class="account-info d-flex justify-content-between">
+                    <label for="pageLeft" class="ms-3"><strong>Số dư</strong></label>
+                    <input type="number" id="pageLeft" name="pageLeft" class="form-control me-3" style="max-width: 300px;" value="@pageLeft" />
+                </div>
+
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.getElementById('accountForm').addEventListener('submit', function (event) {
+            var newPassword = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('Mật khẩu mới và xác nhận mật khẩu không khớp.');
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+    </script>
+}
