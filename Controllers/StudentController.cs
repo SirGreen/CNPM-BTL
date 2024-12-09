@@ -1,14 +1,69 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using InventoryManagementDemo.Data;
-using InventoryManagementDemo.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace InventoryManagementDemo.Controllers
 {
     [Authorize]
     public class StudentController : Controller
     {
+        private readonly UserManager<StudentAccount> _userManager;
+
+        // other dependencies
+
+        public StudentController(UserManager<StudentAccount> userManager /* other dependencies */)
+        {
+            _userManager = userManager;
+            // other initializations
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAccount(string userId, string fullName, string password, string confirmPassword, uint pageLeft)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Update Full Name
+            if (!string.IsNullOrEmpty(fullName))
+            {
+                user.FullName = fullName;
+            }
+
+            user.PageLeft = pageLeft;
+
+            // Update Password (if provided)
+            if (!string.IsNullOrEmpty(password) && password == confirmPassword)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, password);
+                if (!result.Succeeded)
+                {
+                    // Handle password reset errors
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View("Account", user); // Assuming "Account" is your view name
+                }
+            }
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                // Handle user update errors
+                foreach (var error in updateResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View("Hidden", user); // Assuming "Account" is your view name
+            }
+
+            return RedirectToAction("Hidden"); // Redirect to the account page
+        }
+
         public IActionResult Account()
         {
             return View();
@@ -30,6 +85,15 @@ namespace InventoryManagementDemo.Controllers
         }
 
         public IActionResult PageConfig()
+        {
+            return View();
+        }
+
+        public IActionResult Stats()
+        {
+            return View();
+        }
+        public IActionResult Hidden()
         {
             return View();
         }
