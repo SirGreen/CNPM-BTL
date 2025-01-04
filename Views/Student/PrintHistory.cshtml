@@ -148,7 +148,7 @@
 		<div style="display: flex; margin-top: 5%;">
 			<label class="filter-tag">Tag lọc :</label>
 			<div class="filter-tag-input-block">
-				<input placeholder="Nhập điều kiện lọc" class="filter-tag-input">
+				<input id="tagname" placeholder="Nhập điều kiện lọc" class="filter-tag-input">
 				<button class="ri-close-circle-line delete-button"></button>
 			</div>
 		</div>
@@ -345,21 +345,21 @@
 <script>
 	// Sample data - now includes a 'status' field and formatted date
 	var printRecords = [
-		{ fileName: "ABC.pdf", printerId: "1111", date: "27/10/2024", cost: "12 trang A4", type: "pdf", status: "pending", note: "Đang thực hiện" },
-		{ fileName: "AZ.pdf", printerId: "1112", date: "27/10/2024", cost: "8 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
-		{ fileName: "HCMUT.pdf", printerId: "1111", date: "26/10/2024", cost: "14 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
-		{ fileName: "A.docx", printerId: "1113", date: "25/10/2024", cost: "28 trang A4", type: "docx", status: "error", note: "Máy in hết giấy" },
-		{ fileName: "Report.docx", printerId: "1112", date: "25/10/2024", cost: "6 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
-		{ fileName: "PresentationNote.docx", printerId: "1111", date: "23/10/2024", cost: "10 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
-		{ fileName: "Data.pdf", printerId: "1113", date: "23/10/2024", cost: "8 trang A4", type: "pdf", status: "error", note: "Kẹt giấy" },
-		{ fileName: "Notes.pdf", printerId: "1112", date: "22/10/2024", cost: "2 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "ABC.pdf", printerId: "1114", date: "10/12/2024", cost: "32 trang A4", type: "pdf", status: "pending", note: "Đang thực hiện" },
+		{ fileName: "AZ.pdf", printerId: "1112", date: "9/12/2024", cost: "8 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "HCMUT.pdf", printerId: "1111", date: "6/12/2024", cost: "14 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "A.docx", printerId: "1113", date: "3/12/2024", cost: "28 trang A4", type: "docx", status: "error", note: "Máy in hết giấy" },
+		{ fileName: "Report.docx", printerId: "1112", date: "1/12/2024", cost: "6 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "PresentationNote.docx", printerId: "1111", date: "1/12/2024", cost: "10 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "Data.pdf", printerId: "1113", date: "30/11/2024", cost: "8 trang A4", type: "pdf", status: "error", note: "Kẹt giấy" },
+		{ fileName: "Notes.pdf", printerId: "1112", date: "28/11/2024", cost: "2 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
 	];
 
 	var filteredRecords = [
-		{ fileName: "AZ.pdf", printerId: "1112", date: "27/10/2024", cost: "8 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
-		{ fileName: "Report.docx", printerId: "1112", date: "25/10/2024", cost: "6 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
-		{ fileName: "Data.pdf", printerId: "1113", date: "23/10/2024", cost: "8 trang A4", type: "pdf", status: "error", note: "Kẹt giấy" },
-		{ fileName: "Notes.pdf", printerId: "1112", date: "22/10/2024", cost: "2 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "AZ.pdf", printerId: "1112", date: "9/12/2024", cost: "8 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "Report.docx", printerId: "1112", date: "1/12/2024", cost: "6 trang A4", type: "docx", status: "done", note: "Đã hoàn thành" },
+		{ fileName: "Data.pdf", printerId: "1113", date: "30/11/2024", cost: "8 trang A4", type: "pdf", status: "error", note: "Kẹt giấy" },
+		{ fileName: "Notes.pdf", printerId: "1112", date: "28/11/2024", cost: "2 trang A4", type: "pdf", status: "done", note: "Đã hoàn thành" },
 	];
 
 	function loadRecords(records) {
@@ -412,7 +412,7 @@
 	}
 	function deleteFilter() {
 		loadRecords(printRecords);
-
+		document.getElementById('tagname').value = "";
 	}
 
 	document.getElementById('filterButton').addEventListener('click', filterRecords);
